@@ -65,6 +65,15 @@
       font-size: 14px;
       font-weight: 400;
     }
+    .site-footer {
+      margin: 40px auto 32px;
+      padding: 0 24px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+    }
 
     /* Upload Panel */
     .panel {
@@ -228,6 +237,329 @@
       transition: border-color 0.15s;
     }
     .univ-picker select:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-light); }
+    .directory-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .directory-search {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 240px;
+      flex: 1 1 280px;
+    }
+    .directory-search label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .directory-search input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 9px 12px;
+      background: var(--surface);
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .directory-search input:focus {
+      outline: none;
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px var(--brand-light);
+    }
+    .summary-table-wrap {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--surface);
+    }
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 13px;
+    }
+    .summary-table th,
+    .summary-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: middle;
+    }
+    .summary-table th {
+      background: #f9fafb;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .summary-table tbody tr:hover td {
+      background: #fcfcfd;
+    }
+    .summary-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    .summary-table col.summary-col-univ { width: auto; }
+    .summary-table col.summary-col-region { width: 104px; }
+    .summary-table col.summary-col-total,
+    .summary-table col.summary-col-pass,
+    .summary-table col.summary-col-rate { width: 120px; }
+    .summary-table col.summary-col-band { width: 156px; }
+    .summary-table .summary-cell-number {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+    .summary-table .summary-cell-ellipsis {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .summary-link {
+      border: none;
+      background: transparent;
+      padding: 0;
+      color: #0f766e;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+    }
+    .summary-link:hover {
+      color: #115e59;
+      text-decoration: underline;
+    }
+    .dept-finder-results {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .dept-finder-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+    .dept-finder-item-copy {
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+    .dept-finder-item-title {
+      margin: 0 0 4px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.4;
+    }
+    .dept-finder-item-subtitle {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+    .dept-finder-selected {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .dept-finder-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(15, 118, 110, 0.08);
+      border: 1px solid rgba(15, 118, 110, 0.16);
+      color: #115e59;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .dept-finder-chip button {
+      min-width: auto;
+      padding: 0;
+      border: none;
+      background: transparent;
+      color: inherit;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .dept-finder-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .dept-finder-hint {
+      margin-top: 16px;
+      padding: 14px 16px;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      color: var(--text-tertiary);
+      font-size: 13px;
+      line-height: 1.5;
+      background: rgba(249, 250, 251, 0.72);
+    }
+    .trend-table-wrap {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: auto;
+      background: var(--surface);
+    }
+    .trend-wide-shell {
+      width: min(1440px, calc(100vw - 48px));
+      position: relative;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .trend-table {
+      width: max-content;
+      min-width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 13px;
+    }
+    .trend-table th,
+    .trend-table td {
+      padding: 0;
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      vertical-align: top;
+      background: var(--surface);
+    }
+    .trend-table th {
+      position: sticky;
+      top: 0;
+      z-index: 4;
+      background: #f9fafb;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      text-align: left;
+      padding: 12px 14px;
+    }
+    .trend-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    .trend-table tr > *:last-child {
+      border-right: none;
+    }
+    .trend-table .trend-col-class { width: 96px; }
+    .trend-table .trend-col-grade { width: 92px; }
+    .trend-table .trend-col-app { width: 182px; }
+    .trend-table .trend-sticky-class,
+    .trend-table .trend-sticky-grade {
+      position: sticky;
+      z-index: 3;
+      background: #fcfcfd;
+    }
+    .trend-table th.trend-sticky-class,
+    .trend-table th.trend-sticky-grade {
+      z-index: 5;
+      background: #f9fafb;
+    }
+    .trend-table .trend-sticky-class { left: 0; }
+    .trend-table .trend-sticky-grade { left: 96px; }
+    .trend-table tbody tr:hover td {
+      background: #fcfcfd;
+    }
+    .trend-table tbody tr:hover .trend-sticky-class,
+    .trend-table tbody tr:hover .trend-sticky-grade {
+      background: #f8fafc;
+    }
+    .trend-table tbody tr.trend-row-clickable {
+      cursor: pointer;
+    }
+    .trend-cell-core {
+      min-height: 108px;
+      padding: 12px 14px;
+    }
+    .trend-cell-core.is-compact {
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-variant-numeric: tabular-nums;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    .trend-support-card {
+      display: grid;
+      gap: 6px;
+    }
+    .trend-support-univ {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.35;
+      white-space: normal;
+      word-break: break-word;
+    }
+    .trend-support-meta {
+      color: var(--text-secondary);
+      font-size: 12px;
+      line-height: 1.4;
+      white-space: normal;
+      word-break: break-word;
+    }
+    .trend-support-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 2px;
+    }
+    .trend-register-badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      border: 1px solid transparent;
+    }
+    .trend-register-badge.registered {
+      color: #0f766e;
+      background: rgba(15, 118, 110, 0.10);
+      border-color: rgba(15, 118, 110, 0.18);
+    }
+    .trend-register-badge.unregistered {
+      color: #6b7280;
+      background: rgba(107, 114, 128, 0.08);
+      border-color: rgba(107, 114, 128, 0.14);
+    }
+    .trend-empty {
+      color: var(--text-tertiary);
+      font-size: 12px;
+    }
+    .trend-class-summary {
+      display: grid;
+      gap: 6px;
+      justify-items: center;
+      align-content: center;
+      min-height: 108px;
+      text-align: center;
+    }
+    .trend-class-label {
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .trend-class-count {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.35;
+      white-space: pre-line;
+    }
 
     /* Department Container */
     .dept-container {
@@ -770,21 +1102,36 @@
       .segmented-btn { flex: 1; text-align: center; }
       .control-stack,
       .control-group { width: 100%; align-items: stretch; }
+      .dept-finder-item {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .dept-finder-item button {
+        width: 100%;
+      }
       .detail-modal { padding: 12px; }
       .detail-modal-dialog { max-height: 90vh; }
       .detail-modal-head { padding: 16px; }
       .detail-modal-body { padding: 12px 16px 16px; }
       .apptype-band-grid { grid-template-columns: 1fr; }
+      .trend-wide-shell {
+        width: 100%;
+        max-width: 100%;
+        position: static;
+        left: auto;
+        transform: none;
+      }
+      .trend-table .trend-col-app { width: 168px; }
     }
   </style>
 </head>
 <body>
-  <header class="hero">
+  <header id="landing-hero" class="hero">
     <h1>수시 입시 결과 통계 프로그램 [강원진학센터]</h1>
     <p>대교협상담프로그램 - 진학관리 - 수시진학관리의 엑셀파일을 업로드 하면 됩니다.</p>
   </header>
 
-  <section class="panel">
+  <section id="upload-panel" class="panel">
     <h2>엑셀 업로드</h2>
     <div class="field">
       <input type="file" id="file-input" accept=".xlsx,.xls" />
@@ -796,6 +1143,7 @@
   </section>
 
   <section id="report" hidden></section>
+  <footer class="site-footer">2026 강원진학센터 입시분석팀(남궁연. 설악고)</footer>
 
   <div id="detail-modal" class="detail-modal" hidden>
     <div class="detail-modal-backdrop" data-modal-close="true"></div>
@@ -843,6 +1191,9 @@
     const DEFAULT_GRADE_BAND_MODE = "separate";
     const DEFAULT_UNIV_TOP_MODE = "ratio";
     const DEFAULT_UNIV_TOP_SORT = "total";
+    const DEFAULT_UNIV_DIRECTORY_SORT = "total";
+    const DEPT_SEARCH_RESULT_LIMIT = 30;
+    const STUDENT_TREND_MAX_APPS = 6;
     const GRADE_BAND_COLORS = {
       separate: {
         pass: { strong: "rgba(5, 150, 105, 0.82)", weak: "rgba(5, 150, 105, 0.36)" },
@@ -859,6 +1210,8 @@
     const statusEl = document.getElementById("status");
     const reportEl = document.getElementById("report");
     const generateBtn = document.getElementById("generate-btn");
+    const landingHeroEl = document.getElementById("landing-hero");
+    const uploadPanelEl = document.getElementById("upload-panel");
     const detailModalEl = document.getElementById("detail-modal");
     const detailModalTitleEl = document.getElementById("detail-modal-title");
     const detailModalSubtitleEl = document.getElementById("detail-modal-subtitle");
@@ -875,6 +1228,8 @@
     let gradeBandModes = {};
     let univTopMode = DEFAULT_UNIV_TOP_MODE;
     let univTopSort = DEFAULT_UNIV_TOP_SORT;
+    let univDirectorySort = DEFAULT_UNIV_DIRECTORY_SORT;
+    let deptFinderSelection = [];
     let currentReportRecords = [];
     let detailModalViewStack = [];
 
@@ -908,6 +1263,11 @@
       statusEl.style.color = isError ? "#dc2626" : "#6b7280";
     }
 
+    function setLandingVisibility(isVisible) {
+      if (landingHeroEl) landingHeroEl.hidden = !isVisible;
+      if (uploadPanelEl) uploadPanelEl.hidden = !isVisible;
+    }
+
     async function handleGenerate() {
       const file = fileInput.files[0];
       if (!file) {
@@ -923,6 +1283,7 @@
         }
         renderFullReport(records);
         setStatus(`총 ${records.length}건 로드 완료. 보고서가 생성되었습니다.`);
+        setLandingVisibility(false);
       } catch (e) {
         console.error(e);
         setStatus("처리 중 오류: " + e.message, true);
@@ -1091,11 +1452,12 @@
       gradeBandModes = {};
       univTopMode = DEFAULT_UNIV_TOP_MODE;
       univTopSort = DEFAULT_UNIV_TOP_SORT;
+      univDirectorySort = DEFAULT_UNIV_DIRECTORY_SORT;
+      deptFinderSelection = [];
       currentReportRecords = records;
 
       const index = buildRecordIndex(records);
       const { univs, depts, apptypes, subtypes } = index;
-      const safeSelectedUniv = univs.includes(selectedUniv) ? selectedUniv : "";
 
       const header = `
         <div class="fixed-header">
@@ -1113,9 +1475,13 @@
             <div class="tab-bar" id="report-tabs">
               <button type="button" class="tab-btn ${activeTab === "summary" ? "active" : ""}" data-tab="summary">전체데이터요약</button>
               <button type="button" class="tab-btn ${activeTab === "univ" ? "active" : ""}" data-tab="univ">대학별조회</button>
+              <button type="button" class="tab-btn ${activeTab === "dept" ? "active" : ""}" data-tab="dept">학과별조회</button>
+              <button type="button" class="tab-btn ${activeTab === "trend" ? "active" : ""}" data-tab="trend">지원경향조회</button>
             </div>
             <section id="tab-summary" class="tab-panel ${activeTab === "summary" ? "active" : ""}"></section>
             <section id="tab-univ" class="tab-panel ${activeTab === "univ" ? "active" : ""}"></section>
+            <section id="tab-dept" class="tab-panel ${activeTab === "dept" ? "active" : ""}"></section>
+            <section id="tab-trend" class="tab-panel ${activeTab === "trend" ? "active" : ""}"></section>
           </main>
         </div>`;
 
@@ -1124,6 +1490,8 @@
 
       const summaryEl = document.getElementById("tab-summary");
       const univEl = document.getElementById("tab-univ");
+      const deptEl = document.getElementById("tab-dept");
+      const trendEl = document.getElementById("tab-trend");
       let plotCounter = 1;
 
       const filterSummary = `
@@ -1172,46 +1540,81 @@
 
       univEl.innerHTML = `<div class="dept-container">
           <div class="dept-header">대학별 조회</div>
-          <div class="univ-picker">
-            <label for="univ-select">대학 선택</label>
-            <select id="univ-select">
-              <option value="">대학을 선택하세요</option>
-            </select>
+          <div class="card">
+            <div class="card-head">
+              <div class="card-head-copy">
+                <h3>대학별 요약 목록</h3>
+                <div class="card-note">합격건과 합격률은 충원합격을 포함합니다.<span class="card-note-emphasis">대학명을 클릭하면 해당 대학의 상세 데이터를 조회할 수 있습니다.</span></div>
+              </div>
+              <div class="control-group">
+                <div class="control-group-label">정렬 기준</div>
+                <div class="segmented-control" data-univ-directory-sort-group="global" aria-label="대학별 목록 정렬 기준">
+                  <button type="button" class="segmented-btn active" data-univ-directory-sort="total" aria-pressed="true">지원건수순</button>
+                  <button type="button" class="segmented-btn" data-univ-directory-sort="allPassRate" aria-pressed="false">합격률순</button>
+                </div>
+              </div>
+            </div>
+            <div class="directory-toolbar">
+              <div class="directory-search">
+                <label for="univ-directory-search">대학명 검색</label>
+                <input type="search" id="univ-directory-search" placeholder="대학명을 입력하세요" />
+              </div>
+            </div>
+            <div id="univ-directory-table"></div>
           </div>
-          <div id="univ-detail-area"></div>
         </div>`;
 
-      const univDetailEl = document.getElementById("univ-detail-area");
-      if (safeSelectedUniv) {
-        const selected = buildUniversityDetailSection(safeSelectedUniv, index, plotCounter);
-        univDetailEl.innerHTML = selected.html;
-        plotCounter = selected.nextPlotId;
-      } else {
-        univDetailEl.innerHTML = '<div class="empty">대학을 선택하면 해당 대학의 세부 결과가 표시됩니다.</div>';
-      }
+      deptEl.innerHTML = `<div class="dept-container">
+          <div class="dept-header">학과별 조회</div>
+          <div class="card">
+            <div class="card-head">
+              <div class="card-head-copy">
+                <h3>학과 검색</h3>
+                <div class="card-note">학과명을 검색한 뒤 원하는 학과를 여러 개 추가하고, <span class="card-note-emphasis">상세보기</span>로 선택된 학과의 데이터를 함께 확인할 수 있습니다.</div>
+              </div>
+            </div>
+            <div class="directory-search">
+              <label for="dept-finder-search">학과명 검색</label>
+              <input type="search" id="dept-finder-search" placeholder="예: 컴퓨터, 간호, 경영" />
+            </div>
+            <div id="dept-finder-results"></div>
+            <div id="dept-finder-selected"></div>
+            <div class="dept-finder-actions">
+              <button type="button" class="primary" id="dept-finder-open-btn" disabled>상세보기</button>
+              <button type="button" id="dept-finder-clear-btn" disabled>선택 비우기</button>
+            </div>
+            <div class="dept-finder-hint" id="dept-finder-hint">학과명을 입력하면 해당 키워드가 들어간 학과가 표시됩니다. 결과는 <strong>대학명 · 학과명</strong> 단위로 구분됩니다.</div>
+          </div>
+        </div>`;
+
+      trendEl.innerHTML = `<div class="trend-wide-shell">
+          <div class="dept-container">
+            <div class="dept-header">지원경향조회</div>
+            <div class="card">
+              <div class="card-head">
+                <div class="card-head-copy">
+                  <h3>학생별 지원 패턴</h3>
+                  <div class="card-note">학생 1명당 1행으로 표시합니다. 이름과 번호는 제외하고, <span class="card-note-emphasis">반 · 전교과등급 · 지원대학1~6</span> 순서로 지원 경향을 확인할 수 있습니다. 행을 클릭하면 해당 학생의 전체 지원 내역이 세로 표로 열립니다.</div>
+                </div>
+              </div>
+              <div id="student-trend-table"></div>
+            </div>
+          </div>
+        </div>`;
 
       document.querySelectorAll("#report-tabs .tab-btn").forEach((btn) => {
         btn.addEventListener("click", () => setActiveTab(btn.dataset.tab));
       });
 
-      const univSelect = document.getElementById("univ-select");
-      if (univSelect) {
-        univs.forEach((univ) => {
-          const opt = document.createElement("option");
-          opt.value = univ;
-          opt.textContent = univ;
-          univSelect.appendChild(opt);
-        });
-        univSelect.value = safeSelectedUniv;
-        univSelect.addEventListener("change", (e) => {
-          renderFullReport(records, e.target.value, "univ");
-        });
-      }
-
       bindGradeBandModeToggles(records);
       bindApptypeBandModeToggles(records);
       bindUnivTopModeToggle(records);
       bindUnivTopSortToggle(records);
+      bindUnivDirectoryControls(records);
+      renderUnivDirectory(records);
+      bindDeptFinderControls(records);
+      renderDeptFinder(records);
+      renderStudentTrend(records);
       initLazyRendering(records);
     }
 
@@ -2037,6 +2440,280 @@
       });
     }
 
+    function getUnivDirectorySort() {
+      return univDirectorySort || DEFAULT_UNIV_DIRECTORY_SORT;
+    }
+
+    function syncUnivDirectorySortButtons() {
+      const group = document.querySelector("[data-univ-directory-sort-group]");
+      if (!group) return;
+      const sortKey = getUnivDirectorySort();
+      group.querySelectorAll("[data-univ-directory-sort]").forEach((btn) => {
+        const active = btn.dataset.univDirectorySort === sortKey;
+        btn.classList.toggle("active", active);
+        btn.setAttribute("aria-pressed", active ? "true" : "false");
+      });
+    }
+
+    function makeUnivDirectoryStats(records) {
+      const grouped = {};
+      records.forEach((r) => {
+        const key = r.univ || "미상";
+        if (!grouped[key]) grouped[key] = { total: 0, pass: 0, wait: 0, regions: new Set(), passGrades: [] };
+        grouped[key].total += 1;
+        if (r.result === "합격") grouped[key].pass += 1;
+        if (r.result === "충원합격") grouped[key].wait += 1;
+        if (r.region) grouped[key].regions.add(r.region);
+        if ((r.result === "합격" || r.result === "충원합격") && r.all_subj_grade !== null) {
+          grouped[key].passGrades.push(r.all_subj_grade);
+        }
+      });
+      const sortKey = getUnivDirectorySort();
+      return Object.entries(grouped)
+        .map(([univ, item]) => {
+          const allPass = item.pass + item.wait;
+          const regionLabel = item.regions.size ? Array.from(item.regions).sort().join(" / ") : "-";
+          const q1 = item.passGrades.length ? percentile(item.passGrades, 25) : null;
+          const q3 = item.passGrades.length ? percentile(item.passGrades, 75) : null;
+          return {
+            region: regionLabel,
+            univ,
+            total: item.total,
+            allPass,
+            allPassRate: item.total ? (allPass / item.total) * 100 : 0,
+            passBandLabel: fmtRange(q1, q3),
+          };
+        })
+        .sort((a, b) => {
+          if (sortKey === "allPassRate") {
+            return (b.allPassRate - a.allPassRate) || (b.total - a.total) || a.univ.localeCompare(b.univ, "ko");
+          }
+          return (b.total - a.total) || (b.allPassRate - a.allPassRate) || a.univ.localeCompare(b.univ, "ko");
+        });
+    }
+
+    function renderUnivDirectory(records) {
+      const hostEl = document.getElementById("univ-directory-table");
+      if (!hostEl) return;
+      syncUnivDirectorySortButtons();
+      const queryEl = document.getElementById("univ-directory-search");
+      const keyword = safe(queryEl ? queryEl.value : "").toLowerCase();
+      const rows = makeUnivDirectoryStats(records).filter((item) => {
+        if (!keyword) return true;
+        return item.univ.toLowerCase().includes(keyword);
+      });
+      if (!rows.length) {
+        hostEl.innerHTML = '<div class="empty">조건에 맞는 대학이 없습니다.</div>';
+        return;
+      }
+      hostEl.innerHTML = `<div class="summary-table-wrap">
+        <table class="summary-table">
+          <colgroup>
+            <col class="summary-col-region">
+            <col class="summary-col-univ">
+            <col class="summary-col-total">
+            <col class="summary-col-pass">
+            <col class="summary-col-rate">
+            <col class="summary-col-band">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>지역</th>
+              <th>대학명</th>
+              <th class="summary-cell-number">지원건수</th>
+              <th class="summary-cell-number">합격건</th>
+              <th class="summary-cell-number">합격률</th>
+              <th class="summary-cell-number">합격권(Q1~Q3)</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map((item) => `<tr>
+              <td><span class="summary-cell-ellipsis" title="${escapeHtml(item.region)}">${escapeHtml(item.region)}</span></td>
+              <td><button type="button" class="summary-link" data-univ-open="${escapeHtml(item.univ)}">${escapeHtml(item.univ)}</button></td>
+              <td class="summary-cell-number">${item.total.toLocaleString()}건</td>
+              <td class="summary-cell-number">${item.allPass.toLocaleString()}건</td>
+              <td class="summary-cell-number">${item.allPassRate.toFixed(1)}%</td>
+              <td class="summary-cell-number">${escapeHtml(item.passBandLabel)}</td>
+            </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>`;
+      hostEl.onclick = (event) => {
+        const trigger = event.target instanceof Element ? event.target.closest("[data-univ-open]") : null;
+        if (!trigger) return;
+        const univ = trigger.getAttribute("data-univ-open") || "";
+        if (!univ) return;
+        openUnivDetailModal(univ, records);
+      };
+    }
+
+    function bindUnivDirectoryControls(records) {
+      const searchEl = document.getElementById("univ-directory-search");
+      if (searchEl) {
+        searchEl.addEventListener("input", () => {
+          renderUnivDirectory(records);
+        });
+      }
+      const group = document.querySelector("[data-univ-directory-sort-group]");
+      if (!group) return;
+      syncUnivDirectorySortButtons();
+      group.querySelectorAll("[data-univ-directory-sort]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const nextSort = btn.dataset.univDirectorySort || DEFAULT_UNIV_DIRECTORY_SORT;
+          if (getUnivDirectorySort() === nextSort) return;
+          univDirectorySort = nextSort;
+          syncUnivDirectorySortButtons();
+          renderUnivDirectory(records);
+        });
+      });
+    }
+
+    function buildDeptFinderKey(univ, dept) {
+      return `${univ || "미상"}|||${dept || "미상"}`;
+    }
+
+    function buildDeptFinderLabel(entry) {
+      return `${entry.univ} · ${entry.dept}`;
+    }
+
+    function makeDeptFinderEntries(records) {
+      const grouped = {};
+      records.forEach((r) => {
+        const univ = r.univ || "미상";
+        const dept = r.dept || "미상";
+        const key = buildDeptFinderKey(univ, dept);
+        if (!grouped[key]) grouped[key] = { key, univ, dept, total: 0 };
+        grouped[key].total += 1;
+      });
+      return Object.values(grouped).sort((a, b) => {
+        const deptDiff = a.dept.localeCompare(b.dept, "ko");
+        if (deptDiff !== 0) return deptDiff;
+        return a.univ.localeCompare(b.univ, "ko");
+      });
+    }
+
+    function getDeptFinderMatches(entries, keyword) {
+      const normalized = keyword.toLowerCase();
+      return entries
+        .filter((entry) => entry.dept.toLowerCase().includes(normalized))
+        .sort((a, b) => {
+          const aStarts = a.dept.toLowerCase().startsWith(normalized) ? 0 : 1;
+          const bStarts = b.dept.toLowerCase().startsWith(normalized) ? 0 : 1;
+          if (aStarts !== bStarts) return aStarts - bStarts;
+          return (b.total - a.total) || a.dept.localeCompare(b.dept, "ko") || a.univ.localeCompare(b.univ, "ko");
+        })
+        .slice(0, DEPT_SEARCH_RESULT_LIMIT);
+    }
+
+    function getSelectedDeptEntries(entries) {
+      const selectedSet = new Set(deptFinderSelection);
+      return entries.filter((entry) => selectedSet.has(entry.key));
+    }
+
+    function formatDeptSelectionSummary(entries) {
+      if (!entries.length) return "선택 학과 없음";
+      if (entries.length === 1) return buildDeptFinderLabel(entries[0]);
+      return `${buildDeptFinderLabel(entries[0])} 외 ${entries.length - 1}개`;
+    }
+
+    function renderDeptFinder(records) {
+      const searchEl = document.getElementById("dept-finder-search");
+      const resultsEl = document.getElementById("dept-finder-results");
+      const selectedEl = document.getElementById("dept-finder-selected");
+      const openBtn = document.getElementById("dept-finder-open-btn");
+      const clearBtn = document.getElementById("dept-finder-clear-btn");
+      const hintEl = document.getElementById("dept-finder-hint");
+      if (!searchEl || !resultsEl || !selectedEl || !openBtn || !clearBtn || !hintEl) return;
+
+      const entries = makeDeptFinderEntries(records);
+      const selectedEntries = getSelectedDeptEntries(entries);
+      const selectedSet = new Set(selectedEntries.map((entry) => entry.key));
+      const keyword = safe(searchEl.value);
+
+      if (!keyword) {
+        resultsEl.innerHTML = "";
+        hintEl.innerHTML = '학과명을 입력하면 해당 키워드가 들어간 학과가 표시됩니다. 결과는 <strong>대학명 · 학과명</strong> 단위로 구분됩니다.';
+      } else {
+        const matches = getDeptFinderMatches(entries, keyword);
+        if (!matches.length) {
+          resultsEl.innerHTML = '<div class="empty">일치하는 학과가 없습니다.</div>';
+          hintEl.textContent = "검색어를 바꿔 다시 찾아보세요.";
+        } else {
+          resultsEl.innerHTML = `<div class="dept-finder-results">${matches.map((entry) => {
+            const disabled = selectedSet.has(entry.key);
+            return `<div class="dept-finder-item">
+              <div class="dept-finder-item-copy">
+                <div class="dept-finder-item-title">${escapeHtml(entry.dept)}</div>
+                <div class="dept-finder-item-subtitle">${escapeHtml(entry.univ)} · ${entry.total.toLocaleString()}건</div>
+              </div>
+              <button type="button" data-dept-add="${escapeHtml(entry.key)}" ${disabled ? "disabled" : ""}>${disabled ? "추가됨" : "추가"}</button>
+            </div>`;
+          }).join("")}</div>`;
+          hintEl.textContent = matches.length === DEPT_SEARCH_RESULT_LIMIT
+            ? `검색 결과 상위 ${DEPT_SEARCH_RESULT_LIMIT}개만 표시했습니다. 검색어를 더 구체적으로 입력해 주세요.`
+            : `검색 결과 ${matches.length}개가 표시되었습니다.`;
+        }
+      }
+
+      selectedEl.innerHTML = selectedEntries.length
+        ? `<div class="dept-finder-selected">${selectedEntries.map((entry) => `
+            <div class="dept-finder-chip">
+              <span>${escapeHtml(buildDeptFinderLabel(entry))}</span>
+              <button type="button" aria-label="${escapeHtml(entry.dept)} 선택 해제" data-dept-remove="${escapeHtml(entry.key)}">×</button>
+            </div>
+          `).join("")}</div>`
+        : "";
+
+      openBtn.disabled = selectedEntries.length === 0;
+      clearBtn.disabled = selectedEntries.length === 0;
+    }
+
+    function bindDeptFinderControls(records) {
+      const searchEl = document.getElementById("dept-finder-search");
+      const resultsEl = document.getElementById("dept-finder-results");
+      const selectedEl = document.getElementById("dept-finder-selected");
+      const openBtn = document.getElementById("dept-finder-open-btn");
+      const clearBtn = document.getElementById("dept-finder-clear-btn");
+      if (searchEl) {
+        searchEl.addEventListener("input", () => {
+          renderDeptFinder(records);
+        });
+      }
+      if (resultsEl) {
+        resultsEl.addEventListener("click", (event) => {
+          const trigger = event.target instanceof Element ? event.target.closest("[data-dept-add]") : null;
+          if (!trigger) return;
+          const key = trigger.getAttribute("data-dept-add") || "";
+          if (!key || deptFinderSelection.includes(key)) return;
+          deptFinderSelection = [...deptFinderSelection, key];
+          renderDeptFinder(records);
+        });
+      }
+      if (selectedEl) {
+        selectedEl.addEventListener("click", (event) => {
+          const trigger = event.target instanceof Element ? event.target.closest("[data-dept-remove]") : null;
+          if (!trigger) return;
+          const key = trigger.getAttribute("data-dept-remove") || "";
+          if (!key) return;
+          deptFinderSelection = deptFinderSelection.filter((item) => item !== key);
+          renderDeptFinder(records);
+        });
+      }
+      if (clearBtn) {
+        clearBtn.addEventListener("click", () => {
+          deptFinderSelection = [];
+          renderDeptFinder(records);
+        });
+      }
+      if (openBtn) {
+        openBtn.addEventListener("click", () => {
+          const selectedEntries = getSelectedDeptEntries(makeDeptFinderEntries(records));
+          if (!selectedEntries.length) return;
+          openDeptSelectionDetailModal(selectedEntries, records);
+        });
+      }
+    }
+
     function renderGradeBands(records, key, targetPlotId, options = {}) {
       const {
         modeKey = targetPlotId,
@@ -2235,10 +2912,20 @@
       return v === "Y" || v === "N" ? v : "-";
     }
 
+    function formatTrendRegistrationBadge(v) {
+      if (v === "Y") return '<span class="trend-register-badge registered">등록</span>';
+      if (v === "N") return '<span class="trend-register-badge unregistered">미등록</span>';
+      return "";
+    }
+
     function formatResultBadge(result) {
       const normalized = result || "-";
       const badgeClass = normalized === "합격" ? "pass" : normalized === "충원합격" ? "wait" : "fail";
       return `<span class="detail-result-badge ${badgeClass}">${escapeHtml(normalized)}</span>`;
+    }
+
+    function getStudentRecordKey(student) {
+      return `${student.grade || ""}|||${student.class_no || ""}|||${student.student_no || ""}`;
     }
 
     function buildStudentContextLabel(student) {
@@ -2252,9 +2939,105 @@
     }
 
     function isSameStudentRecord(r, student) {
-      return String(r.grade || "") === String(student.grade || "")
-        && String(r.class_no || "") === String(student.class_no || "")
-        && String(r.student_no || "") === String(student.student_no || "");
+      return getStudentRecordKey(r) === getStudentRecordKey(student);
+    }
+
+    function makeStudentTrendRows(records) {
+      const grouped = new Map();
+      records.forEach((r, index) => {
+        const key = getStudentRecordKey(r);
+        if (!grouped.has(key)) {
+          grouped.set(key, {
+            key,
+            rowOrder: index,
+            sortGrade: r.all_subj_grade ?? Number.POSITIVE_INFINITY,
+            gradeLabel: formatModalGrade(r.all_subj_grade),
+            grade: r.grade || "",
+            class_no: r.class_no || "",
+            classLabel: r.class_no || "-",
+            student_no: r.student_no || "",
+            student_name: r.student_name || "",
+            apps: [],
+          });
+        }
+        grouped.get(key).apps.push({
+          univ: r.univ || "-",
+          apptype: r.apptype || "-",
+          dept: r.dept || "-",
+          result: r.result || "-",
+          registered_yn: r.registered_yn || "",
+        });
+      });
+      return Array.from(grouped.values()).sort((a, b) => {
+        if (a.sortGrade !== b.sortGrade) return a.sortGrade - b.sortGrade;
+        const classDiff = String(a.class_no).localeCompare(String(b.class_no), "ko", { numeric: true });
+        if (classDiff !== 0) return classDiff;
+        const noDiff = String(a.student_no).localeCompare(String(b.student_no), "ko", { numeric: true });
+        if (noDiff !== 0) return noDiff;
+        return a.rowOrder - b.rowOrder;
+      });
+    }
+
+    function renderStudentTrend(records) {
+      const hostEl = document.getElementById("student-trend-table");
+      if (!hostEl) return;
+      const rows = makeStudentTrendRows(records);
+      if (!rows.length) {
+        hostEl.innerHTML = '<div class="empty">데이터 없음</div>';
+        hostEl.onclick = null;
+        return;
+      }
+      const visibleApps = STUDENT_TREND_MAX_APPS;
+      hostEl.innerHTML = `<div class="trend-table-wrap">
+        <table class="trend-table">
+          <colgroup>
+            <col class="trend-col-class">
+            <col class="trend-col-grade">
+            ${new Array(visibleApps).fill('<col class="trend-col-app">').join("")}
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="trend-sticky-class">반</th>
+              <th class="trend-sticky-grade">등급</th>
+              ${Array.from({ length: visibleApps }, (_, index) => `<th>지원대학${index + 1}</th>`).join("")}
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map((row) => `<tr class="trend-row-clickable" data-trend-student="true" data-student-grade="${escapeHtml(row.grade || "")}" data-student-class="${escapeHtml(row.class_no || "")}" data-student-no="${escapeHtml(row.student_no || "")}" data-student-name="${escapeHtml(row.student_name || "")}">
+              <td class="trend-sticky-class"><div class="trend-cell-core trend-class-summary"><div class="trend-class-label">${escapeHtml(row.classLabel === "-" ? "-" : `${row.classLabel}반`)}</div><div class="trend-class-count">지원 ${row.apps.length}건</div></div></td>
+              <td class="trend-sticky-grade"><div class="trend-cell-core is-compact">${escapeHtml(row.gradeLabel)}</div></td>
+              ${Array.from({ length: visibleApps }, (_, index) => {
+                const app = row.apps[index];
+                if (!app) {
+                  return '<td><div class="trend-cell-core"><span class="trend-empty">-</span></div></td>';
+                }
+                const regBadge = formatTrendRegistrationBadge(app.registered_yn);
+                return `<td><div class="trend-cell-core">
+                  <div class="trend-support-card">
+                    <div class="trend-support-univ">${escapeHtml(app.univ)}</div>
+                    <div class="trend-support-meta">${escapeHtml(app.apptype)}</div>
+                    <div class="trend-support-meta">${escapeHtml(app.dept)}</div>
+                    <div class="trend-support-badges">
+                      ${formatResultBadge(app.result)}
+                      ${regBadge}
+                    </div>
+                  </div>
+                </div></td>`;
+              }).join("")}
+            </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>`;
+      hostEl.onclick = (event) => {
+        const target = event.target instanceof Element ? event.target.closest('[data-trend-student="true"]') : null;
+        if (!target) return;
+        openStudentDetailModal({
+          grade: target.dataset.studentGrade || "",
+          class_no: target.dataset.studentClass || "",
+          student_no: target.dataset.studentNo || "",
+          student_name: target.dataset.studentName || "",
+        });
+      };
     }
 
     function getDetailTableColumns(includeUniv = false) {
@@ -2337,6 +3120,10 @@
       if (view.type === "univ") {
         return sortRowsByGrade(currentReportRecords.filter((r) => r.univ === view.univ));
       }
+      if (view.type === "deptSelection") {
+        const keySet = new Set((view.entries || []).map((entry) => entry.key));
+        return sortRowsByGrade(currentReportRecords.filter((r) => keySet.has(buildDeptFinderKey(r.univ, r.dept))));
+      }
       if (view.type === "apptype") {
         return sortRowsByGrade(currentReportRecords.filter((r) => (r.apptype || "미상") === view.value));
       }
@@ -2377,6 +3164,19 @@
             includeUniv: false,
             sheetName: "대학상세데이터",
             filenameBase: `${sanitizeFilenamePart(view.univ)}_상세데이터`,
+          },
+        };
+      }
+      if (view.type === "deptSelection") {
+        const summaryText = formatDeptSelectionSummary(view.entries || []);
+        return {
+          title: "선택 학과 상세 데이터",
+          subtitle: `${summaryText} · ${totalText}`,
+          tableOptions: { includeUniv: true, enableStudentLinks: true },
+          exportOptions: {
+            includeUniv: true,
+            sheetName: "학과선택상세데이터",
+            filenameBase: `선택학과_${(view.entries || []).length}개_상세데이터`,
           },
         };
       }
@@ -2477,6 +3277,20 @@
     function openUnivDetailModal(univ, records) {
       currentReportRecords = records;
       detailModalViewStack = [{ type: "univ", univ }];
+      renderDetailModalView();
+    }
+
+    function openDeptSelectionDetailModal(entries, records) {
+      if (!entries || !entries.length) return;
+      currentReportRecords = records;
+      detailModalViewStack = [{
+        type: "deptSelection",
+        entries: entries.map((entry) => ({
+          key: entry.key,
+          univ: entry.univ,
+          dept: entry.dept,
+        })),
+      }];
       renderDetailModalView();
     }
 
