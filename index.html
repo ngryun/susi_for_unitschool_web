@@ -277,6 +277,7 @@
     .plot-container { width: 100%; height: 232px; }
     .plot-container.h-260 { height: 260px; }
     .plot-container.h-280 { height: 280px; }
+    .plot-container.h-320 { height: 320px; }
     .section-spacer { margin-top: 12px; }
 
     /* Stats */
@@ -325,6 +326,205 @@
     .pass-row td { background: var(--success-light); }
     .fail-row td { background: var(--danger-light); }
     .waitlist-row td { background: var(--warning-light); }
+    .detail-modal[hidden] { display: none; }
+    .detail-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .detail-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(17, 24, 39, 0.48);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+    .detail-modal-dialog {
+      position: relative;
+      width: min(1180px, 100%);
+      max-height: min(84vh, 920px);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .detail-modal-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+    }
+    .detail-modal-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+    .detail-modal-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 0 0 auto;
+    }
+    .detail-modal-back {
+      min-width: auto;
+      padding: 8px 12px;
+    }
+    .detail-modal-subtitle {
+      margin-top: 4px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .detail-modal-close {
+      flex: 0 0 auto;
+      min-width: auto;
+      padding: 8px 12px;
+    }
+    .detail-modal-export {
+      flex: 0 0 auto;
+      min-width: auto;
+      padding: 8px 12px;
+    }
+    .detail-modal-body {
+      padding: 16px 20px 20px;
+      overflow: auto;
+    }
+    .detail-table-wrap {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--surface);
+    }
+    .detail-table {
+      width: 100%;
+      min-width: 0;
+      table-layout: fixed;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .detail-table th,
+    .detail-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      white-space: nowrap;
+    }
+    .detail-table th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: #f9fafb;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .detail-table td {
+      color: var(--text-primary);
+      font-variant-numeric: tabular-nums;
+      vertical-align: middle;
+    }
+    .detail-table col.detail-col-class { width: 64px; }
+    .detail-table col.detail-col-region { width: 92px; }
+    .detail-table col.detail-col-univ { width: 126px; }
+    .detail-table col.detail-col-apptype { width: 96px; }
+    .detail-table col.detail-col-subtype { width: 132px; }
+    .detail-table col.detail-col-dept { width: 172px; }
+    .detail-table col.detail-col-result { width: 92px; }
+    .detail-table col.detail-col-register { width: 64px; }
+    .detail-table col.detail-col-grade { width: 94px; }
+    .detail-col-class,
+    .detail-col-register,
+    .detail-col-grade {
+      text-align: center;
+    }
+    .detail-cell-text,
+    .detail-cell-ellipsis {
+      display: block;
+      min-width: 0;
+    }
+    .detail-cell-ellipsis {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .detail-table tr.detail-row-pass td {
+      background: rgba(5, 150, 105, 0.09);
+    }
+    .detail-table tr.detail-row-wait td {
+      background: rgba(217, 119, 6, 0.10);
+    }
+    .detail-table tr.detail-row-pass td:first-child {
+      box-shadow: inset 4px 0 0 rgba(5, 150, 105, 0.45);
+    }
+    .detail-table tr.detail-row-wait td:first-child {
+      box-shadow: inset 4px 0 0 rgba(217, 119, 6, 0.42);
+    }
+    .detail-table tr:hover td {
+      background: #fcfcfd;
+    }
+    .detail-table tr.detail-row-pass:hover td {
+      background: rgba(5, 150, 105, 0.13);
+    }
+    .detail-table tr.detail-row-wait:hover td {
+      background: rgba(217, 119, 6, 0.14);
+    }
+    .detail-result-badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      border: 1px solid transparent;
+    }
+    .detail-result-badge.pass {
+      color: #047857;
+      background: rgba(5, 150, 105, 0.12);
+      border-color: rgba(5, 150, 105, 0.18);
+    }
+    .detail-result-badge.wait {
+      color: #b45309;
+      background: rgba(217, 119, 6, 0.14);
+      border-color: rgba(217, 119, 6, 0.18);
+    }
+    .detail-result-badge.fail {
+      color: #6b7280;
+      background: rgba(107, 114, 128, 0.08);
+      border-color: rgba(107, 114, 128, 0.14);
+    }
+    .detail-table tr.detail-row-clickable {
+      cursor: pointer;
+    }
+    .detail-table tr.detail-row-clickable td:first-child {
+      position: relative;
+    }
+    .detail-table tr.detail-row-clickable td:first-child::after {
+      content: "";
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(15, 118, 110, 0.38);
+      transform: translateY(-50%);
+    }
+    .detail-table tr.detail-row-clickable td {
+      transition: background-color 0.15s ease;
+    }
 
     /* Filter Info */
     .filter-info {
@@ -337,6 +537,21 @@
       font-weight: 500;
       font-size: 13px;
     }
+    .section-hint {
+      margin: 0 0 18px;
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      background: rgba(148, 163, 184, 0.08);
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+    .section-hint strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
 
     /* Grid & Cards */
     .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
@@ -346,12 +561,101 @@
       padding: 16px;
       background: var(--surface);
     }
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .card-head-copy {
+      min-width: 0;
+      flex: 1 1 260px;
+    }
     .card h3 {
       margin: 0 0 12px;
       font-size: 13px;
       font-weight: 600;
       color: var(--text-secondary);
       letter-spacing: 0;
+    }
+    .card-head h3 { margin: 0 0 4px; }
+    .card-note {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      font-weight: 500;
+    }
+    .apptype-band-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+    }
+    .apptype-band-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 14px 10px;
+      background: var(--surface);
+    }
+    .apptype-band-card-head {
+      margin-bottom: 8px;
+    }
+    .apptype-band-card-title {
+      margin: 0 0 4px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+    .card-note-emphasis {
+      display: block;
+      margin-top: 4px;
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+    .segmented-control {
+      display: inline-flex;
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--surface-alt);
+    }
+    .segmented-btn {
+      border: none;
+      background: transparent;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    .segmented-btn:hover { background: rgba(255,255,255,0.72); }
+    .segmented-btn.active {
+      background: var(--surface);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-sm);
+      font-weight: 600;
+    }
+    .control-stack {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: flex-start;
+      justify-content: flex-end;
+    }
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: flex-start;
+    }
+    .control-group-label {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      font-weight: 600;
     }
     .empty {
       padding: 32px 16px;
@@ -376,6 +680,7 @@
       animation: fade-up 0.3s ease both;
     }
     .apptype-chip:hover { box-shadow: var(--shadow-md); }
+    .apptype-chip[data-detail-view] { cursor: pointer; }
     .apptype-chip-title {
       margin: 0 0 6px;
       font-size: 13px;
@@ -425,6 +730,25 @@
       border-radius: 999px;
       transition: width 0.3s ease;
     }
+    .apptype-chip-meta {
+      margin-top: 10px;
+      display: grid;
+      gap: 4px;
+    }
+    .apptype-chip-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .apptype-chip-meta-value {
+      color: var(--text-primary);
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
 
     @keyframes fade-up {
       from { opacity: 0; transform: translateY(8px); }
@@ -442,6 +766,15 @@
       .univ-picker select { min-width: 100%; }
       .dept-container { padding: 16px; border-radius: var(--radius-lg); }
       .panel { margin: 0 16px 24px; }
+      .segmented-control { width: 100%; }
+      .segmented-btn { flex: 1; text-align: center; }
+      .control-stack,
+      .control-group { width: 100%; align-items: stretch; }
+      .detail-modal { padding: 12px; }
+      .detail-modal-dialog { max-height: 90vh; }
+      .detail-modal-head { padding: 16px; }
+      .detail-modal-body { padding: 12px 16px 16px; }
+      .apptype-band-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -464,6 +797,24 @@
 
   <section id="report" hidden></section>
 
+  <div id="detail-modal" class="detail-modal" hidden>
+    <div class="detail-modal-backdrop" data-modal-close="true"></div>
+    <div class="detail-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="detail-modal-title">
+      <div class="detail-modal-head">
+        <div>
+          <h3 id="detail-modal-title" class="detail-modal-title">상세 데이터</h3>
+          <div id="detail-modal-subtitle" class="detail-modal-subtitle"></div>
+        </div>
+        <div class="detail-modal-actions">
+          <button type="button" class="detail-modal-back" id="detail-modal-back" hidden>뒤로</button>
+          <button type="button" class="detail-modal-export" id="detail-modal-export" hidden>엑셀 저장</button>
+          <button type="button" class="detail-modal-close" id="detail-modal-close">닫기</button>
+        </div>
+      </div>
+      <div class="detail-modal-body" id="detail-modal-body"></div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
   <script>
@@ -476,19 +827,81 @@
     const SYMBOL_MAP = { "합격": "circle", "충원합격": "triangle-up", "불합격": "x" };
     const Y_POS = { "합격": 0.01, "충원합격": 0.0, "불합격": -0.03 };
     const BINS = { start: 1, end: 9, size: 0.5 };
+    const GRADE_BANDS = [
+      { label: "1등급대", from: 1, to: 2 },
+      { label: "2등급대", from: 2, to: 3 },
+      { label: "3등급대", from: 3, to: 4 },
+      { label: "4등급대", from: 4, to: 5 },
+      { label: "5등급대", from: 5, to: 6 },
+      { label: "6등급대", from: 6, to: 7 },
+      { label: "7등급대", from: 7, to: 8 },
+      { label: "8등급대", from: 8, to: 9 },
+      { label: "9등급대", from: 9, to: 10 },
+    ];
+    const GRADE_BAND_LOW_SAMPLE_THRESHOLD = 5;
+    const APPTYPE_BAND_TOP_LIMIT = 2;
+    const DEFAULT_GRADE_BAND_MODE = "separate";
+    const DEFAULT_UNIV_TOP_MODE = "ratio";
+    const DEFAULT_UNIV_TOP_SORT = "total";
+    const GRADE_BAND_COLORS = {
+      separate: {
+        pass: { strong: "rgba(5, 150, 105, 0.82)", weak: "rgba(5, 150, 105, 0.36)" },
+        wait: { strong: "rgba(217, 119, 6, 0.72)", weak: "rgba(217, 119, 6, 0.34)" },
+        fail: { strong: "rgba(220, 38, 38, 0.58)", weak: "rgba(220, 38, 38, 0.28)" },
+      },
+      merged: {
+        pass: { strong: "rgba(5, 150, 105, 0.82)", weak: "rgba(5, 150, 105, 0.36)" },
+        fail: { strong: "rgba(220, 38, 38, 0.58)", weak: "rgba(220, 38, 38, 0.28)" },
+      },
+    };
 
     const fileInput = document.getElementById("file-input");
     const statusEl = document.getElementById("status");
     const reportEl = document.getElementById("report");
     const generateBtn = document.getElementById("generate-btn");
+    const detailModalEl = document.getElementById("detail-modal");
+    const detailModalTitleEl = document.getElementById("detail-modal-title");
+    const detailModalSubtitleEl = document.getElementById("detail-modal-subtitle");
+    const detailModalBodyEl = document.getElementById("detail-modal-body");
+    const detailModalBackBtn = document.getElementById("detail-modal-back");
+    const detailModalExportBtn = document.getElementById("detail-modal-export");
+    const detailModalCloseBtn = document.getElementById("detail-modal-close");
 
     let plotsData = {};
     let plotInitialized = {};
     let plotObserver = null;
     let auxObserver = null;
     let auxRenderers = {};
+    let gradeBandModes = {};
+    let univTopMode = DEFAULT_UNIV_TOP_MODE;
+    let univTopSort = DEFAULT_UNIV_TOP_SORT;
+    let currentReportRecords = [];
+    let detailModalViewStack = [];
 
     generateBtn.addEventListener("click", handleGenerate);
+    detailModalBackBtn.addEventListener("click", handleDetailModalBack);
+    detailModalExportBtn.addEventListener("click", handleDetailModalExport);
+    detailModalCloseBtn.addEventListener("click", closeDetailModal);
+    detailModalEl.addEventListener("click", (event) => {
+      if (event.target instanceof HTMLElement && event.target.dataset.modalClose === "true") {
+        closeDetailModal();
+      }
+    });
+    detailModalBodyEl.addEventListener("click", (event) => {
+      const target = event.target instanceof Element ? event.target.closest('[data-student-drilldown="true"]') : null;
+      if (!target) return;
+      openStudentDetailModal({
+        grade: target.dataset.studentGrade || "",
+        class_no: target.dataset.studentClass || "",
+        student_no: target.dataset.studentNo || "",
+        student_name: target.dataset.studentName || "",
+      });
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !detailModalEl.hidden) {
+        closeDetailModal();
+      }
+    });
 
     function setStatus(msg, isError = false) {
       statusEl.textContent = msg;
@@ -557,6 +970,7 @@
                 subtype: safe(row[COL.subtype]),
                 dept: safe(row[COL.dept]),
                 result: safe(row[COL.result]),
+                registered_yn: parseRegistration(row[21]), // V: 등록여부(Y/N)
                 all_subj_grade: parseGrade(row[COL.all]),
                 conv_grade: parseGrade(row[COL.conv]),
               };
@@ -576,6 +990,25 @@
 
     function safe(v) { return v === undefined || v === null ? "" : String(v).trim(); }
     function parseGrade(v) { const n = parseFloat(v); return Number.isFinite(n) ? n : null; }
+    function parseRegistration(v) {
+      const raw = safe(v).toUpperCase();
+      return raw === "Y" || raw === "N" ? raw : "";
+    }
+    function escapeHtml(v) {
+      return String(v ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+    function sanitizeFilenamePart(v) {
+      return String(v ?? "")
+        .trim()
+        .replace(/[\\/:*?"<>|]+/g, "_")
+        .replace(/\s+/g, " ")
+        .slice(0, 80) || "상세데이터";
+    }
 
     function sortedSet(setObj) {
       return Array.from(setObj).filter(Boolean).sort();
@@ -655,6 +1088,10 @@
       resetLazyObservers();
       plotsData = {};
       plotInitialized = {};
+      gradeBandModes = {};
+      univTopMode = DEFAULT_UNIV_TOP_MODE;
+      univTopSort = DEFAULT_UNIV_TOP_SORT;
+      currentReportRecords = records;
 
       const index = buildRecordIndex(records);
       const { univs, depts, apptypes, subtypes } = index;
@@ -695,17 +1132,40 @@
         </div>`;
       summaryEl.insertAdjacentHTML("beforeend", filterSummary);
 
-      const overallBlock = buildPlotBlock(records, plotCounter, "전체 데이터", true, false, true, true, false, true, false);
+      const overallBlock = buildPlotBlock(records, plotCounter, "전체 데이터", true, false, true, true, false, true, false, true, true);
       plotsData[plotCounter] = overallBlock.data;
       summaryEl.insertAdjacentHTML("beforeend", `<div class="dept-container section-overall" id="overall-summary">
           <div class="dept-header">전체 데이터 요약</div>
+          <div class="section-hint"><strong>전형별 현황</strong>, <strong>지역별 현황</strong> 카드와 <strong>등급대 차트</strong>를 클릭하면 해당 조건의 상세 데이터를 조회할 수 있습니다.</div>
           ${overallBlock.html}
         </div>`);
       plotCounter++;
 
       summaryEl.insertAdjacentHTML("beforeend", `<div class="dept-container section-top20" id="univ-top-global">
-          <div class="dept-header">지원 상위 대학 TOP 20 합/충원/불합격</div>
+          <div class="dept-header">지원 상위 대학 TOP 20</div>
           <div class="card">
+            <div class="card-head">
+              <div class="card-head-copy">
+                <h3>합격/충원/불합격 결과 비교</h3>
+                <div class="card-note" id="univ-top-note">상위 20개 대학은 지원 건수 기준으로 선정했습니다. 막대는 결과 비율, 우측 숫자 열은 총건수와 합격권(Q1~Q3)입니다.<span class="card-note-emphasis">막대그래프나 대학명을 클릭하면 해당 대학의 지원 데이터를 조회할 수 있습니다.</span></div>
+              </div>
+              <div class="control-stack">
+                <div class="control-group">
+                  <div class="control-group-label">표시 방식</div>
+                  <div class="segmented-control" data-univ-top-mode-group="global" aria-label="대학 TOP 20 차트 표시 방식">
+                    <button type="button" class="segmented-btn active" data-univ-top-mode="ratio" aria-pressed="true">비율 보기</button>
+                    <button type="button" class="segmented-btn" data-univ-top-mode="count" aria-pressed="false">건수 보기</button>
+                  </div>
+                </div>
+                <div class="control-group">
+                  <div class="control-group-label">정렬 기준</div>
+                  <div class="segmented-control" data-univ-top-sort-group="global" aria-label="대학 TOP 20 정렬 기준">
+                    <button type="button" class="segmented-btn active" data-univ-top-sort="total" aria-pressed="true">지원건수순</button>
+                    <button type="button" class="segmented-btn" data-univ-top-sort="allPassRate" aria-pressed="false">합격률순</button>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div id="univ-top-chart" class="plot-container"></div>
           </div>
         </div>`);
@@ -748,6 +1208,10 @@
         });
       }
 
+      bindGradeBandModeToggles(records);
+      bindApptypeBandModeToggles(records);
+      bindUnivTopModeToggle(records);
+      bindUnivTopSortToggle(records);
       initLazyRendering(records);
     }
 
@@ -827,7 +1291,7 @@
       return { html, nextPlotId: plotCounter };
     }
 
-    function buildPlotBlock(dataArr, plotId, title, showStats = true, includeHist = false, includeBands = false, includeApptype = false, includeScatter = true, prioritizeApptype = false, showAllDetail = true) {
+    function buildPlotBlock(dataArr, plotId, title, showStats = true, includeHist = false, includeBands = false, includeApptype = false, includeScatter = true, prioritizeApptype = false, showAllDetail = true, includeRegion = false, includeApptypeBandCompare = false) {
       const groupedByResult = groupByResult(dataArr);
       const allStats = computeStatsFromGrouped(groupedByResult, "all_subj_grade");
       const allDetail = computeAdditionalStatsFromGrouped(groupedByResult, "all_subj_grade");
@@ -838,6 +1302,8 @@
       let apptypeHtml = "";
       let histHtml = "";
       let bandHtml = "";
+      let apptypeBandHtml = "";
+      let regionHtml = "";
       let extraHtml = "";
       let topHtml = "";
       let bottomHtml = "";
@@ -847,6 +1313,14 @@
             <div class="card">
               <h3>전형별 현황</h3>
               <div id="apptype-table-${plotId}"></div>
+            </div>
+          </div>`;
+      }
+      if (includeRegion) {
+        regionHtml += `<div class="section-spacer">
+            <div class="card">
+              <h3>지역별 현황</h3>
+              <div id="region-table-${plotId}"></div>
             </div>
           </div>`;
       }
@@ -863,19 +1337,50 @@
           </div>`;
       }
       if (includeBands) {
+        const currentBandMode = gradeBandModes[plotId] || DEFAULT_GRADE_BAND_MODE;
+        gradeBandModes[plotId] = currentBandMode;
         bandHtml += `<div class="section-spacer">
             <div class="card">
-              <h3>전교과 등급대별 합격/불합격</h3>
-              <div id="band-bar-${plotId}" class="plot-container h-280"></div>
+              <div class="card-head">
+                <div class="card-head-copy">
+                  <h3>전교과 등급대별 지원 건수 및 합격률</h3>
+                  <div class="card-note" id="band-note-${plotId}">등급 미기재 제외 0건</div>
+                </div>
+                <div class="segmented-control" data-band-mode-group="${plotId}" aria-label="충원합격 표시 방식">
+                  <button type="button" class="segmented-btn${currentBandMode === "separate" ? " active" : ""}" data-band-mode="separate" aria-pressed="${currentBandMode === "separate"}">충원 분리</button>
+                  <button type="button" class="segmented-btn${currentBandMode === "merged" ? " active" : ""}" data-band-mode="merged" aria-pressed="${currentBandMode === "merged"}">충원 합산</button>
+                </div>
+              </div>
+              <div id="band-bar-${plotId}" class="plot-container h-320"></div>
+            </div>
+          </div>`;
+      }
+      if (includeApptypeBandCompare) {
+        const apptypeBandModeKey = `apptype-band-${plotId}`;
+        const currentApptypeBandMode = gradeBandModes[apptypeBandModeKey] || DEFAULT_GRADE_BAND_MODE;
+        gradeBandModes[apptypeBandModeKey] = currentApptypeBandMode;
+        apptypeBandHtml += `<div class="section-spacer">
+            <div class="card">
+              <div class="card-head">
+                <div class="card-head-copy">
+                  <h3>전형에 따른 등급대별 지원 건수 및 합격률</h3>
+                  <div class="card-note">전형별 현황에서 지원 건수가 많은 상위 2개 전형을 비교합니다.</div>
+                </div>
+                <div class="segmented-control" data-apptype-band-mode-group="${plotId}" aria-label="전형별 등급대 차트 충원합격 표시 방식">
+                  <button type="button" class="segmented-btn${currentApptypeBandMode === "separate" ? " active" : ""}" data-band-mode="separate" aria-pressed="${currentApptypeBandMode === "separate"}">충원 분리</button>
+                  <button type="button" class="segmented-btn${currentApptypeBandMode === "merged" ? " active" : ""}" data-band-mode="merged" aria-pressed="${currentApptypeBandMode === "merged"}">충원 합산</button>
+                </div>
+              </div>
+              <div id="apptype-band-section-${plotId}"></div>
             </div>
           </div>`;
       }
 
       if (prioritizeApptype) {
         topHtml = apptypeHtml;
-        bottomHtml = histHtml + bandHtml;
+        bottomHtml = histHtml + bandHtml + apptypeBandHtml + regionHtml;
       } else {
-        extraHtml = histHtml + bandHtml + apptypeHtml;
+        extraHtml = histHtml + bandHtml + apptypeBandHtml + apptypeHtml + regionHtml;
       }
 
       const html = `
@@ -1088,8 +1593,14 @@
         if (document.getElementById(`band-bar-${pid}`)) {
           auxRenderers[`band-bar-${pid}`] = () => renderGradeBands(records, "all_subj_grade", pid);
         }
+        if (document.getElementById(`apptype-band-section-${pid}`)) {
+          auxRenderers[`apptype-band-section-${pid}`] = () => renderApptypeGradeBandComparisons(records, pid);
+        }
         if (document.getElementById(`apptype-table-${pid}`)) {
           auxRenderers[`apptype-table-${pid}`] = () => renderApptypeStats(records, pid);
+        }
+        if (document.getElementById(`region-table-${pid}`)) {
+          auxRenderers[`region-table-${pid}`] = () => renderRegionStats(records, pid);
         }
       });
       if (document.getElementById("univ-top-chart")) {
@@ -1203,182 +1714,999 @@
       return { center, passCounts, failCounts };
     }
 
-    function makeGradeBandStats(records, key) {
-      const bands = [
-        { label: "1등급대", from: 1, to: 1.999 },
-        { label: "2등급대", from: 2, to: 2.999 },
-        { label: "3등급대", from: 3, to: 3.999 },
-        { label: "4등급대", from: 4, to: 4.999 },
-        { label: "5등급대", from: 5, to: 5.999 },
-        { label: "6등급대", from: 6, to: 6.999 },
-        { label: "7등급대", from: 7, to: 7.999 },
-        { label: "8등급대", from: 8, to: 8.999 },
-        { label: "9등급대", from: 9, to: 9.999 },
-      ];
-      return bands.map((b) => {
-        const inBand = records.filter((r) => r[key] !== null && r[key] >= b.from && r[key] <= b.to);
-        const pass = inBand.filter((r) => r.result === "합격" || r.result === "충원합격").length;
-        const fail = inBand.filter((r) => r.result === "불합격").length;
-        const total = pass + fail;
-        return {
-          label: b.label,
-          pass,
-          fail,
-          total,
-          passRate: total ? (pass / total) * 100 : 0,
-        };
+    function getGradeBandMode(plotId) {
+      return gradeBandModes[plotId] || DEFAULT_GRADE_BAND_MODE;
+    }
+
+    function syncGradeBandModeButtons(plotId) {
+      const group = document.querySelector(`[data-band-mode-group="${plotId}"]`);
+      if (!group) return;
+      const mode = getGradeBandMode(plotId);
+      group.querySelectorAll("[data-band-mode]").forEach((btn) => {
+        const active = btn.dataset.bandMode === mode;
+        btn.classList.toggle("active", active);
+        btn.setAttribute("aria-pressed", active ? "true" : "false");
       });
     }
 
-    function renderGradeBands(records, key, targetPlotId) {
-      const stats = makeGradeBandStats(records, key);
-      const labels = stats.map((s) => s.label);
-      const passCounts = stats.map((s) => s.pass);
-      const failCounts = stats.map((s) => s.fail);
-      const hasData = stats.some((s) => s.total > 0);
+    function bindGradeBandModeToggles(records) {
+      document.querySelectorAll("[data-band-mode-group]").forEach((group) => {
+        const plotId = group.dataset.bandModeGroup;
+        syncGradeBandModeButtons(plotId);
+        group.querySelectorAll("[data-band-mode]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const nextMode = btn.dataset.bandMode || DEFAULT_GRADE_BAND_MODE;
+            if (getGradeBandMode(plotId) === nextMode) return;
+            gradeBandModes[plotId] = nextMode;
+            syncGradeBandModeButtons(plotId);
+            renderGradeBands(records, "all_subj_grade", plotId);
+          });
+        });
+      });
+    }
 
-      const barEl = document.getElementById(`band-bar-${targetPlotId}`);
-      if (barEl) {
-        if (!hasData) {
-          barEl.innerHTML = '<div class="empty">데이터 없음</div>';
-        } else {
-          const passRates = stats.map((s) => s.total ? ((s.pass / s.total) * 100).toFixed(0) + "%" : "");
-          Plotly.newPlot(barEl, [
-            {
-              x: labels, y: passCounts, type: "bar", name: "합격(충원포함)",
-              marker: { color: "rgba(5, 150, 105, 0.75)", line: { width: 0 } },
-              text: passRates, textposition: "inside", textfont: { color: "#fff", size: 11, family: "Inter, sans-serif" },
-              hovertemplate: "%{x}: %{y}건<extra>합격(충원포함)</extra>",
-            },
-            {
-              x: labels, y: failCounts, type: "bar", name: "불합격",
-              marker: { color: "rgba(220, 38, 38, 0.6)", line: { width: 0 } },
-              hovertemplate: "%{x}: %{y}건<extra>불합격</extra>",
-            },
-          ], {
-            height: 280,
-            barmode: "stack",
-            bargap: 0.35,
-            margin: { t: 16, b: 44, l: 48, r: 16 },
-            yaxis: { title: { text: "건수", font: { size: 11, color: "#9ca3af" } }, gridcolor: "#f0f0f0", gridwidth: 1, zeroline: false, tickfont: { size: 11, color: "#9ca3af" } },
-            xaxis: { tickfont: { size: 11, color: "#6b7280" } },
-            legend: { orientation: "h", x: 0.5, xanchor: "center", y: 1.12, font: { size: 11, color: "#6b7280" } },
-            plot_bgcolor: "#fff",
-            paper_bgcolor: "#fff",
-            font: { family: "Inter, -apple-system, sans-serif" },
-          }, { displayModeBar: false, responsive: true });
+    function getApptypeBandMode(plotId) {
+      return getGradeBandMode(`apptype-band-${plotId}`);
+    }
+
+    function syncApptypeBandModeButtons(plotId) {
+      const group = document.querySelector(`[data-apptype-band-mode-group="${plotId}"]`);
+      if (!group) return;
+      const mode = getApptypeBandMode(plotId);
+      group.querySelectorAll("[data-band-mode]").forEach((btn) => {
+        const active = btn.dataset.bandMode === mode;
+        btn.classList.toggle("active", active);
+        btn.setAttribute("aria-pressed", active ? "true" : "false");
+      });
+    }
+
+    function bindApptypeBandModeToggles(records) {
+      document.querySelectorAll("[data-apptype-band-mode-group]").forEach((group) => {
+        const plotId = group.dataset.apptypeBandModeGroup;
+        syncApptypeBandModeButtons(plotId);
+        group.querySelectorAll("[data-band-mode]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const nextMode = btn.dataset.bandMode || DEFAULT_GRADE_BAND_MODE;
+            const modeKey = `apptype-band-${plotId}`;
+            if (getGradeBandMode(modeKey) === nextMode) return;
+            gradeBandModes[modeKey] = nextMode;
+            syncApptypeBandModeButtons(plotId);
+            renderApptypeGradeBandComparisons(records, plotId);
+          });
+        });
+      });
+    }
+
+    function getGradeBandBarColor(mode, key, isLowSample) {
+      const palette = GRADE_BAND_COLORS[mode][key];
+      return isLowSample ? palette.weak : palette.strong;
+    }
+
+    function buildGradeBandHoverTemplate(traceLabel) {
+      return `<b>%{x}</b><br>총 건수: %{customdata[0]}건<br>합격: %{customdata[1]}건<br>충원합격: %{customdata[2]}건<br>불합격: %{customdata[3]}건<br>최초합격률: %{customdata[4]:.1f}%<br>충원포함 합격률: %{customdata[5]:.1f}%<extra>${traceLabel}</extra>`;
+    }
+
+    function makeGradeBandStats(records, key) {
+      const excludedCount = records.filter((r) => r[key] === null).length;
+      const stats = GRADE_BANDS.map((band) => {
+        const inBand = records.filter((r) => r[key] !== null && r[key] >= band.from && r[key] < band.to);
+        const pass = inBand.filter((r) => r.result === "합격").length;
+        const wait = inBand.filter((r) => r.result === "충원합격").length;
+        const fail = inBand.filter((r) => r.result === "불합격").length;
+        const total = pass + wait + fail;
+        return {
+          label: band.label,
+          pass,
+          wait,
+          fail,
+          total,
+          firstPassRate: total ? (pass / total) * 100 : 0,
+          allPassRate: total ? ((pass + wait) / total) * 100 : 0,
+          isLowSample: total > 0 && total < GRADE_BAND_LOW_SAMPLE_THRESHOLD,
+        };
+      });
+      return { stats, excludedCount };
+    }
+
+    function getGradeBandDefinition(label) {
+      return GRADE_BANDS.find((band) => band.label === label) || null;
+    }
+
+    function getGradeBandYAxisMax(stats, fixedYMax = null) {
+      if (fixedYMax !== null && fixedYMax !== undefined) return fixedYMax;
+      const maxTotal = Math.max(...stats.map((s) => s.total), 0);
+      return Math.max(4, maxTotal + Math.max(2, Math.ceil(maxTotal * 0.28)));
+    }
+
+    function buildGradeBandAnnotations(stats) {
+      return stats.flatMap((s) => {
+        const items = [{
+          x: s.label,
+          y: s.total,
+          text: `${s.total}건`,
+          showarrow: false,
+          yshift: 12,
+          font: { size: 11, color: "#111827", family: "Inter, sans-serif" },
+        }];
+        if (s.isLowSample) {
+          items.push({
+            x: s.label,
+            y: s.total,
+            text: "표본 적음",
+            showarrow: false,
+            yshift: 30,
+            bgcolor: "#fffbeb",
+            bordercolor: "#f59e0b",
+            borderwidth: 1,
+            borderpad: 4,
+            font: { size: 10, color: "#92400e", family: "Inter, sans-serif" },
+          });
         }
+        return items;
+      });
+    }
+
+    function renderGradeBandPlot(graphEl, stats, mode, yMax, onSelect) {
+      const labels = stats.map((s) => s.label);
+      const totals = stats.map((s) => s.total);
+      const passCounts = stats.map((s) => s.pass);
+      const waitCounts = stats.map((s) => s.wait);
+      const failCounts = stats.map((s) => s.fail);
+      const mergedPassCounts = stats.map((s) => s.pass + s.wait);
+      const rateValues = stats.map((s) => s.total ? Number(s.allPassRate.toFixed(1)) : null);
+      const hoverData = stats.map((s) => [s.total, s.pass, s.wait, s.fail, Number(s.firstPassRate.toFixed(1)), Number(s.allPassRate.toFixed(1))]);
+      const hasData = totals.some((v) => v > 0);
+      if (!hasData) {
+        graphEl.innerHTML = '<div class="empty">데이터 없음</div>';
+        return;
+      }
+      const traces = [];
+      if (mode === "separate") {
+        traces.push(
+          {
+            x: labels,
+            y: passCounts,
+            type: "bar",
+            name: "합격",
+            marker: { color: stats.map((s) => getGradeBandBarColor("separate", "pass", s.isLowSample)), line: { width: 0 } },
+            customdata: hoverData,
+            hovertemplate: buildGradeBandHoverTemplate("합격"),
+          },
+          {
+            x: labels,
+            y: waitCounts,
+            type: "bar",
+            name: "충원합격",
+            marker: { color: stats.map((s) => getGradeBandBarColor("separate", "wait", s.isLowSample)), line: { width: 0 } },
+            customdata: hoverData,
+            hovertemplate: buildGradeBandHoverTemplate("충원합격"),
+          },
+          {
+            x: labels,
+            y: failCounts,
+            type: "bar",
+            name: "불합격",
+            marker: { color: stats.map((s) => getGradeBandBarColor("separate", "fail", s.isLowSample)), line: { width: 0 } },
+            customdata: hoverData,
+            hovertemplate: buildGradeBandHoverTemplate("불합격"),
+          }
+        );
+      } else {
+        traces.push(
+          {
+            x: labels,
+            y: mergedPassCounts,
+            type: "bar",
+            name: "합격(충원포함)",
+            marker: { color: stats.map((s) => getGradeBandBarColor("merged", "pass", s.isLowSample)), line: { width: 0 } },
+            customdata: hoverData,
+            hovertemplate: buildGradeBandHoverTemplate("합격(충원포함)"),
+          },
+          {
+            x: labels,
+            y: failCounts,
+            type: "bar",
+            name: "불합격",
+            marker: { color: stats.map((s) => getGradeBandBarColor("merged", "fail", s.isLowSample)), line: { width: 0 } },
+            customdata: hoverData,
+            hovertemplate: buildGradeBandHoverTemplate("불합격"),
+          }
+        );
+      }
+      traces.push({
+        x: labels,
+        y: rateValues,
+        type: "scatter",
+        mode: "lines+markers",
+        name: "충원포함 합격률",
+        yaxis: "y2",
+        connectgaps: false,
+        marker: { size: 8, color: "#2563eb", line: { width: 2, color: "#ffffff" } },
+        line: { width: 2.5, color: "#2563eb", shape: "linear" },
+        customdata: hoverData,
+        hovertemplate: buildGradeBandHoverTemplate("충원포함 합격률"),
+      });
+
+      Plotly.newPlot(graphEl, traces, {
+        height: 320,
+        barmode: "stack",
+        bargap: 0.28,
+        margin: { t: 32, b: 48, l: 52, r: 56 },
+        xaxis: {
+          type: "category",
+          categoryorder: "array",
+          categoryarray: labels,
+          tickfont: { size: 11, color: "#6b7280" },
+        },
+        yaxis: {
+          title: { text: "건수", font: { size: 11, color: "#9ca3af" } },
+          range: [0, yMax],
+          gridcolor: "#f0f0f0",
+          gridwidth: 1,
+          zeroline: false,
+          tickfont: { size: 11, color: "#9ca3af" },
+        },
+        yaxis2: {
+          title: { text: "합격률", font: { size: 11, color: "#9ca3af" } },
+          overlaying: "y",
+          side: "right",
+          range: [0, 100],
+          ticksuffix: "%",
+          showgrid: false,
+          zeroline: false,
+          tickfont: { size: 11, color: "#9ca3af" },
+        },
+        annotations: buildGradeBandAnnotations(stats),
+        legend: { orientation: "h", x: 0.5, xanchor: "center", y: 1.16, font: { size: 11, color: "#6b7280" } },
+        plot_bgcolor: "#fff",
+        paper_bgcolor: "#fff",
+        font: { family: "Inter, -apple-system, sans-serif" },
+      }, { displayModeBar: false, responsive: true }).then(() => {
+        bindGradeBandInteractions(graphEl, onSelect);
+      });
+    }
+
+    function getUnivTopMode() {
+      return univTopMode || DEFAULT_UNIV_TOP_MODE;
+    }
+
+    function syncUnivTopModeButtons() {
+      const group = document.querySelector("[data-univ-top-mode-group]");
+      if (!group) return;
+      const mode = getUnivTopMode();
+      group.querySelectorAll("[data-univ-top-mode]").forEach((btn) => {
+        const active = btn.dataset.univTopMode === mode;
+        btn.classList.toggle("active", active);
+        btn.setAttribute("aria-pressed", active ? "true" : "false");
+      });
+    }
+
+    function updateUnivTopNote() {
+      const noteEl = document.getElementById("univ-top-note");
+      if (!noteEl) return;
+      const modeText = getUnivTopMode() === "ratio" ? "결과 비율" : "절대 건수";
+      noteEl.innerHTML = `상위 20개 대학은 지원 건수 기준으로 선정했습니다. 막대는 ${modeText}, 우측 숫자 열은 총건수와 합격권(Q1~Q3)입니다.<span class="card-note-emphasis">막대그래프나 대학명을 클릭하면 해당 대학의 지원 데이터를 조회할 수 있습니다.</span>`;
+    }
+
+    function bindUnivTopModeToggle(records) {
+      const group = document.querySelector("[data-univ-top-mode-group]");
+      if (!group) return;
+      syncUnivTopModeButtons();
+      updateUnivTopNote();
+      group.querySelectorAll("[data-univ-top-mode]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const nextMode = btn.dataset.univTopMode || DEFAULT_UNIV_TOP_MODE;
+          if (getUnivTopMode() === nextMode) return;
+          univTopMode = nextMode;
+          syncUnivTopModeButtons();
+          updateUnivTopNote();
+          renderUnivTop(records);
+        });
+      });
+    }
+
+    function getUnivTopSort() {
+      return univTopSort || DEFAULT_UNIV_TOP_SORT;
+    }
+
+    function syncUnivTopSortButtons() {
+      const group = document.querySelector("[data-univ-top-sort-group]");
+      if (!group) return;
+      const sortKey = getUnivTopSort();
+      group.querySelectorAll("[data-univ-top-sort]").forEach((btn) => {
+        const active = btn.dataset.univTopSort === sortKey;
+        btn.classList.toggle("active", active);
+        btn.setAttribute("aria-pressed", active ? "true" : "false");
+      });
+    }
+
+    function bindUnivTopSortToggle(records) {
+      const group = document.querySelector("[data-univ-top-sort-group]");
+      if (!group) return;
+      syncUnivTopSortButtons();
+      updateUnivTopNote();
+      group.querySelectorAll("[data-univ-top-sort]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const nextSort = btn.dataset.univTopSort || DEFAULT_UNIV_TOP_SORT;
+          if (getUnivTopSort() === nextSort) return;
+          univTopSort = nextSort;
+          syncUnivTopSortButtons();
+          updateUnivTopNote();
+          renderUnivTop(records);
+        });
+      });
+    }
+
+    function renderGradeBands(records, key, targetPlotId, options = {}) {
+      const {
+        modeKey = targetPlotId,
+        noteId = `band-note-${targetPlotId}`,
+        barId = `band-bar-${targetPlotId}`,
+        fixedYMax = null,
+        syncModeButtons = () => syncGradeBandModeButtons(targetPlotId),
+        onSelect = (label) => openGradeBandDetailModal(String(label), key, records),
+      } = options;
+      const { stats, excludedCount } = makeGradeBandStats(records, key);
+      const mode = getGradeBandMode(modeKey);
+      const noteEl = document.getElementById(noteId);
+      if (noteEl) {
+        noteEl.textContent = `등급 미기재 제외 ${excludedCount}건`;
+      }
+      syncModeButtons();
+      const barEl = document.getElementById(barId);
+      if (barEl) {
+        renderGradeBandPlot(barEl, stats, mode, getGradeBandYAxisMax(stats, fixedYMax), onSelect);
       }
     }
 
-    function makeApptypeStats(records) {
+    function getTopApptypeBandGroups(records) {
+      return makeApptypeStats(records)
+        .filter((item) => item.total > 0)
+        .slice(0, APPTYPE_BAND_TOP_LIMIT)
+        .map((item) => ({
+          ...item,
+          subset: records.filter((r) => (r.apptype || "미상") === item.label),
+        }));
+    }
+
+    function renderApptypeGradeBandComparisons(records, plotId) {
+      const hostEl = document.getElementById(`apptype-band-section-${plotId}`);
+      if (!hostEl) return;
+      const groups = getTopApptypeBandGroups(records);
+      syncApptypeBandModeButtons(plotId);
+      if (!groups.length) {
+        hostEl.innerHTML = '<div class="empty">데이터 없음</div>';
+        return;
+      }
+      hostEl.innerHTML = `<div class="apptype-band-grid">${groups.map((group, index) => `
+        <div class="apptype-band-card">
+          <div class="apptype-band-card-head">
+            <h4 class="apptype-band-card-title">${escapeHtml(group.label)} · ${group.total.toLocaleString()}건</h4>
+            <div class="card-note" id="apptype-band-note-${plotId}-${index}">등급 미기재 제외 0건</div>
+          </div>
+          <div id="apptype-band-bar-${plotId}-${index}" class="plot-container h-320"></div>
+        </div>
+      `).join("")}</div>`;
+      const sharedYMax = Math.max(...groups.map((group) => getGradeBandYAxisMax(makeGradeBandStats(group.subset, "all_subj_grade").stats)), 4);
+      groups.forEach((group, index) => {
+        renderGradeBands(group.subset, "all_subj_grade", plotId, {
+          modeKey: `apptype-band-${plotId}`,
+          noteId: `apptype-band-note-${plotId}-${index}`,
+          barId: `apptype-band-bar-${plotId}-${index}`,
+          fixedYMax: sharedYMax,
+          syncModeButtons: () => syncApptypeBandModeButtons(plotId),
+          onSelect: (label) => openGradeBandDetailModal(String(label), "all_subj_grade", records, {
+            categoryType: "apptype",
+            categoryValue: group.label,
+            categoryLabel: group.label,
+          }),
+        });
+      });
+    }
+
+    function bindGradeBandInteractions(graphEl, onSelect) {
+      if (typeof graphEl.removeAllListeners === "function") {
+        graphEl.removeAllListeners("plotly_click");
+      }
+      graphEl.on("plotly_click", (event) => {
+        const point = event && event.points && event.points[0];
+        if (!point || !point.x) return;
+        onSelect(String(point.x));
+      });
+      graphEl.querySelectorAll(".barlayer .trace path, .scatterlayer .trace path").forEach((el) => {
+        el.style.cursor = "pointer";
+      });
+    }
+
+    function clampPct(v) {
+      return Math.max(0, Math.min(100, v));
+    }
+
+    function rateColor(pct) {
+      if (pct >= 70) return "#059669";
+      if (pct >= 50) return "#10b981";
+      if (pct >= 30) return "#d97706";
+      return "#dc2626";
+    }
+
+    function makeCategoryStats(records, categoryKey, fallbackLabel = "미상") {
       const groups = {};
       records.forEach((r) => {
-        const key = r.apptype || "미상";
-        if (!groups[key]) groups[key] = { total: 0, pass: 0, wait: 0, fail: 0 };
+        const key = r[categoryKey] || fallbackLabel;
+        if (!groups[key]) groups[key] = { total: 0, pass: 0, wait: 0, fail: 0, registered: 0 };
         groups[key].total += 1;
         if (r.result === "합격") groups[key].pass += 1;
         else if (r.result === "충원합격") groups[key].wait += 1;
         else if (r.result === "불합격") groups[key].fail += 1;
+        if ((r.result === "합격" || r.result === "충원합격") && r.registered_yn === "Y") groups[key].registered += 1;
       });
       return Object.entries(groups).map(([apptype, g]) => {
         const total = g.total || 1;
         const allPass = g.pass + g.wait;
         return {
-          apptype,
+          label: apptype,
           total: g.total,
           pass: g.pass,
           wait: g.wait,
           fail: g.fail,
+          registered: g.registered,
           allPass,
           allPassRate: (allPass / total) * 100,
+          registrationRate: allPass ? (g.registered / allPass) * 100 : 0,
           passRate: (g.pass / total) * 100,
           waitRate: (g.wait / total) * 100,
           failRate: (g.fail / total) * 100,
         };
-      }).sort((a, b) => (b.total - a.total) || a.apptype.localeCompare(b.apptype, "ko"));
+      }).sort((a, b) => (b.total - a.total) || a.label.localeCompare(b.label, "ko"));
     }
 
-    function renderApptypeStats(records, plotId) {
-      const stats = makeApptypeStats(records);
+    function renderCategoryCards(stats, targetEl, detailRecords) {
       const hasData = stats.some((s) => s.total > 0);
-      const clampPct = (v) => Math.max(0, Math.min(100, v));
-      const rateColor = (pct) => {
-        if (pct >= 70) return "#059669";
-        if (pct >= 50) return "#10b981";
-        if (pct >= 30) return "#d97706";
-        return "#dc2626";
-      };
-
-      const cardEl = document.getElementById(`apptype-table-${plotId}`);
-      if (!cardEl) return;
       if (!hasData) {
-        cardEl.innerHTML = '<div class="empty">데이터 없음</div>';
+        targetEl.innerHTML = '<div class="empty">데이터 없음</div>';
+        targetEl.onclick = null;
         return;
       }
       const cards = stats.map((s) => {
         const pct = clampPct(s.allPassRate);
-        return `<article class="apptype-chip">
-          <h4 class="apptype-chip-title">${s.apptype}</h4>
+        const registrationPct = clampPct(s.registrationRate);
+        return `<article class="apptype-chip" data-detail-view="${escapeHtml(s.detailView || "")}" data-detail-value="${escapeHtml(s.detailValue || s.label || "")}" data-detail-label="${escapeHtml(s.label || "")}">
+          <h4 class="apptype-chip-title">${s.label}</h4>
           <div class="apptype-chip-count">${s.total.toLocaleString()}건</div>
           <div class="apptype-chip-rate-row">
             <span class="apptype-chip-rate-label">합격률(충원포함)</span>
             <span class="apptype-chip-rate-value">${pct.toFixed(1)}%</span>
           </div>
           <div class="apptype-chip-bar"><span style="width:${pct.toFixed(1)}%; background:${rateColor(pct)};"></span></div>
+          <div class="apptype-chip-meta">
+            <div class="apptype-chip-meta-row">
+              <span>합격건</span>
+              <span class="apptype-chip-meta-value">${s.allPass.toLocaleString()}건</span>
+            </div>
+            <div class="apptype-chip-meta-row">
+              <span>등록건</span>
+              <span class="apptype-chip-meta-value">${s.registered.toLocaleString()}건</span>
+            </div>
+            <div class="apptype-chip-meta-row">
+              <span>등록비율</span>
+              <span class="apptype-chip-meta-value">${registrationPct.toFixed(1)}%</span>
+            </div>
+          </div>
         </article>`;
       }).join("");
-      cardEl.innerHTML = `<div class="apptype-chip-grid">${cards}</div>`;
+      targetEl.innerHTML = `<div class="apptype-chip-grid">${cards}</div>`;
+      targetEl.onclick = (event) => {
+        const card = event.target instanceof Element ? event.target.closest("[data-detail-view]") : null;
+        if (!card) return;
+        const detailView = card.dataset.detailView || "";
+        const detailValue = card.dataset.detailValue || "";
+        const detailLabel = card.dataset.detailLabel || detailValue;
+        if (!detailView || !detailValue) return;
+        if (detailView === "apptype") openCategoryDetailModal("apptype", detailValue, detailLabel, detailRecords);
+        if (detailView === "region") openCategoryDetailModal("region", detailValue, detailLabel, detailRecords);
+      };
+    }
+
+    function makeApptypeStats(records) {
+      return makeCategoryStats(records, "apptype").map((item) => ({ ...item, detailView: "apptype", detailValue: item.label }));
+    }
+
+    function makeRegionStats(records) {
+      return makeCategoryStats(records, "region").map((item) => ({ ...item, detailView: "region", detailValue: item.label }));
+    }
+
+    function renderApptypeStats(records, plotId) {
+      const cardEl = document.getElementById(`apptype-table-${plotId}`);
+      if (!cardEl) return;
+      renderCategoryCards(makeApptypeStats(records), cardEl, records);
+    }
+
+    function renderRegionStats(records, plotId) {
+      const cardEl = document.getElementById(`region-table-${plotId}`);
+      if (!cardEl) return;
+      renderCategoryCards(makeRegionStats(records), cardEl, records);
+    }
+
+    function formatModalGrade(v) {
+      return v === null || v === undefined || Number.isNaN(v) ? "-" : Number(v).toFixed(2);
+    }
+
+    function formatRegistrationDisplay(v) {
+      return v === "Y" || v === "N" ? v : "-";
+    }
+
+    function formatResultBadge(result) {
+      const normalized = result || "-";
+      const badgeClass = normalized === "합격" ? "pass" : normalized === "충원합격" ? "wait" : "fail";
+      return `<span class="detail-result-badge ${badgeClass}">${escapeHtml(normalized)}</span>`;
+    }
+
+    function buildStudentContextLabel(student) {
+      return student.class_no ? `${student.class_no}반` : "반 미기재";
+    }
+
+    function buildExportTimestamp() {
+      const now = new Date();
+      const pad = (value) => String(value).padStart(2, "0");
+      return `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+    }
+
+    function isSameStudentRecord(r, student) {
+      return String(r.grade || "") === String(student.grade || "")
+        && String(r.class_no || "") === String(student.class_no || "")
+        && String(r.student_no || "") === String(student.student_no || "");
+    }
+
+    function getDetailTableColumns(includeUniv = false) {
+      const columns = [
+        { header: "반", colClass: "detail-col-class", value: (r) => r.class_no || "-" },
+        { header: "지역", colClass: "detail-col-region", value: (r) => r.region || "-", ellipsis: true },
+      ];
+      if (includeUniv) {
+        columns.push({ header: "대학", colClass: "detail-col-univ", value: (r) => r.univ || "-", ellipsis: true });
+      }
+      columns.push(
+        { header: "전형유형", colClass: "detail-col-apptype", value: (r) => r.apptype || "-", ellipsis: true },
+        { header: "세부유형", colClass: "detail-col-subtype", value: (r) => r.subtype || "-", ellipsis: true },
+        { header: "모집단위", colClass: "detail-col-dept", value: (r) => r.dept || "-", ellipsis: true },
+        { header: "결과", colClass: "detail-col-result", render: (r) => formatResultBadge(r.result) },
+        { header: "등록", colClass: "detail-col-register", value: (r) => formatRegistrationDisplay(r.registered_yn) },
+        { header: "전교과등급", colClass: "detail-col-grade", value: (r) => formatModalGrade(r.all_subj_grade) },
+      );
+      return columns;
+    }
+
+    function renderDetailTextCell(value, ellipsis = false) {
+      const safeValue = value || "-";
+      const className = ellipsis ? "detail-cell-ellipsis" : "detail-cell-text";
+      const titleAttr = ellipsis ? ` title="${escapeHtml(safeValue)}"` : "";
+      return `<span class="${className}"${titleAttr}>${escapeHtml(safeValue)}</span>`;
+    }
+
+    function buildDetailTable(records, options = {}) {
+      const { includeUniv = false, enableStudentLinks = false } = options;
+      if (!records.length) return '<div class="empty">데이터 없음</div>';
+      const columns = getDetailTableColumns(includeUniv);
+      const rows = records.map((r) => {
+        const rowClassParts = [
+          r.result === "합격" ? "detail-row-pass" : r.result === "충원합격" ? "detail-row-wait" : "",
+          enableStudentLinks ? "detail-row-clickable" : "",
+        ].filter(Boolean);
+        const rowAttrs = enableStudentLinks
+          ? ` data-student-drilldown="true" data-student-grade="${escapeHtml(r.grade || "")}" data-student-class="${escapeHtml(r.class_no || "")}" data-student-no="${escapeHtml(r.student_no || "")}" data-student-name="${escapeHtml(r.student_name || "")}"`
+          : "";
+        const cells = columns.map((column) => {
+          const cellContent = column.render
+            ? column.render(r)
+            : renderDetailTextCell(column.value(r), !!column.ellipsis);
+          return `<td class="${column.colClass}">${cellContent}</td>`;
+        }).join("");
+        return `<tr class="${rowClassParts.join(" ")}"${rowAttrs}>${cells}</tr>`;
+      }).join("");
+      const colgroup = columns.map((column) => `<col class="${column.colClass}">`).join("");
+      const thead = columns.map((column) => `<th class="${column.colClass}">${escapeHtml(column.header)}</th>`).join("");
+      return `<div class="detail-table-wrap">
+        <table class="detail-table">
+          <colgroup>${colgroup}</colgroup>
+          <thead><tr>${thead}</tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+    }
+
+    function sortRowsByGrade(records) {
+      return [...records].sort((a, b) => {
+        const gradeA = a.all_subj_grade ?? Number.POSITIVE_INFINITY;
+        const gradeB = b.all_subj_grade ?? Number.POSITIVE_INFINITY;
+        if (gradeA !== gradeB) return gradeA - gradeB;
+        const resultDiff = RESULT_ORDER.indexOf(a.result) - RESULT_ORDER.indexOf(b.result);
+        if (resultDiff !== 0) return resultDiff;
+        const univDiff = (a.univ || "").localeCompare(b.univ || "", "ko");
+        if (univDiff !== 0) return univDiff;
+        return (a.student_name || "").localeCompare(b.student_name || "", "ko");
+      });
+    }
+
+    function formatGradeBandRange(band) {
+      if (!band) return "-";
+      return `${Number(band.from).toFixed(2)} ~ ${Number(band.to - 0.01).toFixed(2)}`;
+    }
+
+    function getDetailRowsForView(view) {
+      if (!view) return [];
+      if (view.type === "univ") {
+        return sortRowsByGrade(currentReportRecords.filter((r) => r.univ === view.univ));
+      }
+      if (view.type === "apptype") {
+        return sortRowsByGrade(currentReportRecords.filter((r) => (r.apptype || "미상") === view.value));
+      }
+      if (view.type === "region") {
+        return sortRowsByGrade(currentReportRecords.filter((r) => (r.region || "미상") === view.value));
+      }
+      if (view.type === "gradeBand") {
+        return sortRowsByGrade(currentReportRecords.filter((r) => {
+          if (r[view.key] === null || r[view.key] < view.band.from || r[view.key] >= view.band.to) return false;
+          if (view.categoryType === "apptype") return (r.apptype || "미상") === view.categoryValue;
+          return true;
+        }));
+      }
+      if (view.type === "student") {
+        return currentReportRecords
+          .filter((r) => isSameStudentRecord(r, view.student))
+          .sort((a, b) => {
+            const resultDiff = RESULT_ORDER.indexOf(a.result) - RESULT_ORDER.indexOf(b.result);
+            if (resultDiff !== 0) return resultDiff;
+            const univDiff = (a.univ || "").localeCompare(b.univ || "", "ko");
+            if (univDiff !== 0) return univDiff;
+            const subtypeDiff = (a.subtype || "").localeCompare(b.subtype || "", "ko");
+            if (subtypeDiff !== 0) return subtypeDiff;
+            return (a.dept || "").localeCompare(b.dept || "", "ko");
+          });
+      }
+      return [];
+    }
+
+    function getDetailViewConfig(view, detailRows) {
+      const totalText = `총 ${detailRows.length.toLocaleString()}건`;
+      if (view.type === "univ") {
+        return {
+          title: `${view.univ} 상세 데이터`,
+          subtitle: totalText,
+          tableOptions: { enableStudentLinks: true },
+          exportOptions: {
+            includeUniv: false,
+            sheetName: "대학상세데이터",
+            filenameBase: `${sanitizeFilenamePart(view.univ)}_상세데이터`,
+          },
+        };
+      }
+      if (view.type === "apptype") {
+        return {
+          title: `${view.label} 상세 데이터`,
+          subtitle: `전형유형 · ${totalText}`,
+          tableOptions: { includeUniv: true, enableStudentLinks: true },
+          exportOptions: {
+            includeUniv: true,
+            sheetName: "전형유형상세데이터",
+            filenameBase: `${sanitizeFilenamePart(view.label)}_전형유형상세데이터`,
+          },
+        };
+      }
+      if (view.type === "region") {
+        return {
+          title: `${view.label} 상세 데이터`,
+          subtitle: `지역별 현황 · ${totalText}`,
+          tableOptions: { includeUniv: true, enableStudentLinks: true },
+          exportOptions: {
+            includeUniv: true,
+            sheetName: "지역상세데이터",
+            filenameBase: `${sanitizeFilenamePart(view.label)}_지역상세데이터`,
+          },
+        };
+      }
+      if (view.type === "gradeBand") {
+        const prefixText = view.categoryType === "apptype" ? `${view.categoryLabel} · ` : "";
+        const subtitlePrefix = view.categoryType === "apptype" ? `전형유형 ${view.categoryLabel} · ` : "";
+        return {
+          title: `${prefixText}${view.label} 상세 데이터`,
+          subtitle: `${subtitlePrefix}전교과등급 ${formatGradeBandRange(view.band)} · ${totalText}`,
+          tableOptions: { includeUniv: true, enableStudentLinks: true },
+          exportOptions: {
+            includeUniv: true,
+            sheetName: "등급대상세데이터",
+            filenameBase: `${sanitizeFilenamePart(prefixText + view.label)}_상세데이터`,
+          },
+        };
+      }
+      if (view.type === "student") {
+        const studentContext = buildStudentContextLabel(view.student);
+        return {
+          title: "학생 지원 전체 목록",
+          subtitle: `${studentContext} · ${totalText}`,
+          tableOptions: { includeUniv: true },
+          exportOptions: {
+            includeUniv: true,
+            sheetName: "학생전체지원목록",
+            filenameBase: `학생_${sanitizeFilenamePart(studentContext)}_지원전체목록_${buildExportTimestamp()}`,
+          },
+        };
+      }
+      return {
+        title: "상세 데이터",
+        subtitle: totalText,
+        tableOptions: {},
+        exportOptions: { includeUniv: false, sheetName: "상세데이터", filenameBase: "상세데이터" },
+      };
+    }
+
+    function buildExportRows(records, options = {}) {
+      const { includeUniv = false } = options;
+      return records.map((r) => {
+        const row = {
+          "반": r.class_no || "",
+          "지역": r.region || "",
+        };
+        if (includeUniv) row["대학"] = r.univ || "";
+        row["전형유형"] = r.apptype || "";
+        row["세부유형"] = r.subtype || "";
+        row["모집단위"] = r.dept || "";
+        row["결과"] = r.result || "";
+        row["등록"] = formatRegistrationDisplay(r.registered_yn);
+        row["전교과등급"] = r.all_subj_grade === null || r.all_subj_grade === undefined || Number.isNaN(r.all_subj_grade) ? "" : Number(r.all_subj_grade).toFixed(2);
+        return row;
+      });
+    }
+
+    function renderDetailModalView() {
+      const currentView = detailModalViewStack[detailModalViewStack.length - 1];
+      if (!currentView) {
+        closeDetailModal();
+        return;
+      }
+      const detailRows = getDetailRowsForView(currentView);
+      const viewConfig = getDetailViewConfig(currentView, detailRows);
+      detailModalBackBtn.hidden = detailModalViewStack.length <= 1;
+      detailModalExportBtn.hidden = !detailRows.length;
+      detailModalTitleEl.textContent = viewConfig.title;
+      detailModalSubtitleEl.textContent = viewConfig.subtitle;
+      detailModalBodyEl.innerHTML = buildDetailTable(detailRows, viewConfig.tableOptions);
+      detailModalEl.hidden = false;
+      document.body.style.overflow = "hidden";
+    }
+
+    function openUnivDetailModal(univ, records) {
+      currentReportRecords = records;
+      detailModalViewStack = [{ type: "univ", univ }];
+      renderDetailModalView();
+    }
+
+    function openCategoryDetailModal(type, value, label, records) {
+      currentReportRecords = records;
+      detailModalViewStack = [{ type, value, label }];
+      renderDetailModalView();
+    }
+
+    function openGradeBandDetailModal(label, key, records, options = {}) {
+      const band = getGradeBandDefinition(label);
+      if (!band) return;
+      currentReportRecords = records;
+      detailModalViewStack = [{
+        type: "gradeBand",
+        label,
+        band,
+        key,
+        categoryType: options.categoryType || "",
+        categoryValue: options.categoryValue || "",
+        categoryLabel: options.categoryLabel || "",
+      }];
+      renderDetailModalView();
+    }
+
+    function openStudentDetailModal(student) {
+      if (!student) return;
+      const currentView = detailModalViewStack[detailModalViewStack.length - 1];
+      if (currentView && currentView.type === "student" && isSameStudentRecord(currentView.student, student)) return;
+      detailModalViewStack.push({ type: "student", student });
+      renderDetailModalView();
+    }
+
+    function handleDetailModalBack() {
+      if (detailModalViewStack.length <= 1) return;
+      detailModalViewStack.pop();
+      renderDetailModalView();
+    }
+
+    function handleDetailModalExport() {
+      const currentView = detailModalViewStack[detailModalViewStack.length - 1];
+      if (!currentView) return;
+      const detailRows = getDetailRowsForView(currentView);
+      if (!detailRows.length) return;
+      const viewConfig = getDetailViewConfig(currentView, detailRows);
+      const exportRows = buildExportRows(detailRows, { includeUniv: !!viewConfig.exportOptions.includeUniv });
+      const worksheet = XLSX.utils.json_to_sheet(exportRows);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, viewConfig.exportOptions.sheetName);
+      XLSX.writeFile(workbook, `${viewConfig.exportOptions.filenameBase}.xlsx`);
+    }
+
+    function closeDetailModal() {
+      detailModalEl.hidden = true;
+      detailModalBodyEl.innerHTML = "";
+      document.body.style.overflow = "";
+      detailModalViewStack = [];
+      detailModalBackBtn.hidden = true;
+      detailModalExportBtn.hidden = true;
+    }
+
+    function bindUnivTopInteractions(graphEl, records) {
+      if (typeof graphEl.removeAllListeners === "function") {
+        graphEl.removeAllListeners("plotly_click");
+      }
+      graphEl.on("plotly_click", (event) => {
+        const point = event && event.points && event.points[0];
+        if (!point || !point.y) return;
+        openUnivDetailModal(point.y, records);
+      });
+
+      graphEl.querySelectorAll(".barlayer .trace path").forEach((el) => {
+        el.style.cursor = "pointer";
+      });
+      graphEl.querySelectorAll(".yaxislayer-above .ytick").forEach((tickEl) => {
+        const univ = tickEl.textContent.trim();
+        if (!univ) return;
+        tickEl.style.cursor = "pointer";
+        tickEl.querySelectorAll("*").forEach((child) => {
+          child.style.cursor = "pointer";
+          child.style.pointerEvents = "all";
+        });
+        tickEl.onclick = () => openUnivDetailModal(univ, records);
+      });
     }
 
     function renderUnivTop(records) {
       const univTopEl = document.getElementById("univ-top-chart");
       if (!univTopEl) return;
+      const mode = getUnivTopMode();
+      const sortKey = getUnivTopSort();
+      syncUnivTopModeButtons();
+      syncUnivTopSortButtons();
+      updateUnivTopNote();
       const grouped = {};
       records.forEach((r) => {
         const key = r.univ || "미상";
-        if (!grouped[key]) grouped[key] = { pass: 0, wait: 0, fail: 0, total: 0 };
+        if (!grouped[key]) grouped[key] = { pass: 0, wait: 0, fail: 0, total: 0, passGrades: [] };
         grouped[key].total += 1;
         if (r.result === "합격") grouped[key].pass += 1;
         else if (r.result === "충원합격") grouped[key].wait += 1;
         else if (r.result === "불합격") grouped[key].fail += 1;
+        if ((r.result === "합격" || r.result === "충원합격") && r.all_subj_grade !== null) {
+          grouped[key].passGrades.push(r.all_subj_grade);
+        }
       });
-      const sorted = Object.entries(grouped)
-        .map(([univ, g]) => ({ univ, ...g }))
+      const selectedTop = Object.entries(grouped)
+        .map(([univ, g]) => {
+          const total = g.total || 0;
+          const firstPassRate = total ? (g.pass / total) * 100 : 0;
+          const allPassRate = total ? ((g.pass + g.wait) / total) * 100 : 0;
+          const q1 = g.passGrades.length ? percentile(g.passGrades, 25) : null;
+          const q3 = g.passGrades.length ? percentile(g.passGrades, 75) : null;
+          const passBandLabel = g.passGrades.length ? fmtRange(q1, q3) : "-";
+          return { univ, ...g, firstPassRate, allPassRate, q1, q3, passBandLabel };
+        })
         .filter((x) => x.total > 0)
         .sort((a, b) => b.total - a.total)
         .slice(0, 20);
+      const sorted = [...selectedTop].sort((a, b) => {
+        if (sortKey === "allPassRate") {
+          return (b.allPassRate - a.allPassRate) || (b.total - a.total) || a.univ.localeCompare(b.univ, "ko");
+        }
+        return (b.total - a.total) || (b.allPassRate - a.allPassRate) || a.univ.localeCompare(b.univ, "ko");
+      });
       const labelsTop = sorted.map((s) => s.univ);
       const passTop = sorted.map((s) => s.pass);
       const waitTop = sorted.map((s) => s.wait);
       const failTop = sorted.map((s) => s.fail);
+      const passRateTop = sorted.map((s) => Number(s.firstPassRate.toFixed(1)));
+      const waitRateTop = sorted.map((s) => s.total ? Number(((s.wait / s.total) * 100).toFixed(1)) : 0);
+      const failRateTop = sorted.map((s) => s.total ? Number(((s.fail / s.total) * 100).toFixed(1)) : 0);
       if (!sorted.length) {
         univTopEl.innerHTML = '<div class="empty">데이터 없음</div>';
       } else {
         const dynamicHeight = Math.max(360, 26 * labelsTop.length + 110);
         univTopEl.style.height = dynamicHeight + "px";
+        const xData = mode === "ratio"
+          ? { pass: passRateTop, wait: waitRateTop, fail: failRateTop }
+          : { pass: passTop, wait: waitTop, fail: failTop };
+        const countData = { pass: passTop, wait: waitTop, fail: failTop };
+        const xTitle = mode === "ratio" ? "비율" : "건수";
+        const xSuffix = mode === "ratio" ? "%" : "건";
+        const summaryX = { total: 1.01, band: 1.11 };
+        const headerAnnotations = [
+          {
+            xref: "paper",
+            x: summaryX.total,
+            yref: "paper",
+            y: 1.06,
+            text: "<b>총건수</b>",
+            showarrow: false,
+            xanchor: "left",
+            align: "left",
+            font: { size: 12, color: "#6b7280", family: "Inter, sans-serif" },
+          },
+          {
+            xref: "paper",
+            x: summaryX.band,
+            yref: "paper",
+            y: 1.06,
+            text: "<b>합격권</b>",
+            showarrow: false,
+            xanchor: "left",
+            align: "left",
+            font: { size: 12, color: "#6b7280", family: "Inter, sans-serif" },
+          },
+        ];
+        const rowAnnotations = sorted.flatMap((s) => ([
+          {
+            xref: "paper",
+            x: summaryX.total,
+            yref: "y",
+            y: s.univ,
+            text: `${s.total.toLocaleString()}건`,
+            showarrow: false,
+            xanchor: "left",
+            align: "left",
+            font: { size: 12, color: "#374151", family: "Inter, sans-serif" },
+          },
+          {
+            xref: "paper",
+            x: summaryX.band,
+            yref: "y",
+            y: s.univ,
+            text: s.passBandLabel,
+            showarrow: false,
+            xanchor: "left",
+            align: "left",
+            font: { size: 12, color: "#374151", family: "Inter, sans-serif" },
+          },
+        ]));
+        const annotations = [...headerAnnotations, ...rowAnnotations];
+        const buildHoverTemplate = (label) => `<b>%{y}</b><br>${label}: %{customdata}건<extra></extra>`;
         Plotly.newPlot(univTopEl, [
-          { y: labelsTop, x: passTop, type: "bar", name: "합격", orientation: "h",
-            marker: { color: "rgba(5, 150, 105, 0.75)", line: { width: 0 } },
-            hovertemplate: "%{y}: %{x}건<extra>합격</extra>" },
-          { y: labelsTop, x: waitTop, type: "bar", name: "충원합격", orientation: "h",
-            marker: { color: "rgba(217, 119, 6, 0.65)", line: { width: 0 } },
-            hovertemplate: "%{y}: %{x}건<extra>충원합격</extra>" },
-          { y: labelsTop, x: failTop, type: "bar", name: "불합격", orientation: "h",
-            marker: { color: "rgba(220, 38, 38, 0.55)", line: { width: 0 } },
-            hovertemplate: "%{y}: %{x}건<extra>불합격</extra>" },
+          { y: labelsTop, x: xData.pass, type: "bar", name: "합격", orientation: "h",
+            marker: { color: "rgba(5, 150, 105, 0.78)", line: { width: 0 } },
+            customdata: countData.pass,
+            hovertemplate: buildHoverTemplate("합격") },
+          { y: labelsTop, x: xData.wait, type: "bar", name: "충원합격", orientation: "h",
+            marker: { color: "rgba(217, 119, 6, 0.68)", line: { width: 0 } },
+            customdata: countData.wait,
+            hovertemplate: buildHoverTemplate("충원합격") },
+          { y: labelsTop, x: xData.fail, type: "bar", name: "불합격", orientation: "h",
+            marker: { color: "rgba(220, 38, 38, 0.58)", line: { width: 0 } },
+            customdata: countData.fail,
+            hovertemplate: buildHoverTemplate("불합격") },
         ], {
             height: dynamicHeight,
             barmode: "stack",
             bargap: 0.3,
-            margin: { t: 36, b: 40, l: 150, r: 24 },
-            xaxis: { title: { text: "건수", font: { size: 11, color: "#9ca3af" } }, gridcolor: "#f0f0f0", gridwidth: 1, zeroline: false, tickfont: { size: 11, color: "#9ca3af" } },
-            yaxis: { tickfont: { size: 12, color: "#374151" }, autorange: "reversed" },
-            legend: { orientation: "h", x: 0.5, xanchor: "center", y: 1.05, font: { size: 11, color: "#6b7280" } },
+            margin: { t: 54, b: 78, l: 150, r: 176 },
+            xaxis: {
+              title: { text: xTitle, font: { size: 11, color: "#9ca3af" } },
+              gridcolor: "#f0f0f0",
+              gridwidth: 1,
+              zeroline: false,
+              tickfont: { size: 11, color: "#9ca3af" },
+              ticksuffix: xSuffix,
+              range: mode === "ratio" ? [0, 100] : undefined,
+            },
+            yaxis: { tickfont: { size: 13, color: "#374151" }, autorange: "reversed" },
+            annotations,
+            legend: { orientation: "h", x: 0.5, xanchor: "center", y: -0.18, font: { size: 11, color: "#6b7280" } },
             plot_bgcolor: "#fff",
             paper_bgcolor: "#fff",
             font: { family: "Inter, -apple-system, sans-serif" },
-        }, { displayModeBar: false, responsive: true });
+        }, { displayModeBar: false, responsive: true }).then(() => {
+          bindUnivTopInteractions(univTopEl, records);
+        });
       }
     }
 
