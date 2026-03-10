@@ -164,6 +164,24 @@
       gap: 4px;
     }
     .header-top { display: flex; align-items: center; justify-content: space-between; }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .header-action-btn {
+      border-color: var(--border);
+      background: var(--surface);
+      color: var(--text-primary);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 7px 12px;
+      white-space: nowrap;
+    }
+    .header-action-btn:hover {
+      background: var(--surface-alt);
+      border-color: #d1d5db;
+    }
     .site-title {
       font-weight: 500;
       color: var(--text-tertiary);
@@ -1121,18 +1139,30 @@
         left: auto;
         transform: none;
       }
+      .header-top {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+      .header-actions {
+        width: 100%;
+      }
+      .header-action-btn {
+        width: 100%;
+      }
       .trend-table .trend-col-app { width: 168px; }
     }
   </style>
 </head>
 <body>
   <header id="landing-hero" class="hero">
-    <h1>수시 입시 결과 통계 프로그램 [강원진학센터]</h1>
-    <p>대교협상담프로그램 - 진학관리 - 수시진학관리의 엑셀파일을 업로드 하면 됩니다.</p>
+    <h1>단위학교 수시 입시 결과 분석 프로그램</h1>
+    <p>- 2026 강원진학센터 입시분석팀 -</p>
   </header>
 
   <section id="upload-panel" class="panel">
     <h2>엑셀 업로드</h2>
+    <div style="margin-top: 0; margin-bottom: 12px; color: var(--text-secondary); font-size: 13px;">대교협프로그램 - 진학관리 - 전년도 수시진학 - 조회 - 엑셀다운로드 양식을 업로드하세요.</div>
     <div class="field">
       <input type="file" id="file-input" accept=".xlsx,.xls" />
       <div class="actions">
@@ -1246,10 +1276,8 @@
       const target = event.target instanceof Element ? event.target.closest('[data-student-drilldown="true"]') : null;
       if (!target) return;
       openStudentDetailModal({
-        grade: target.dataset.studentGrade || "",
+        student_key: target.dataset.studentKey || "",
         class_no: target.dataset.studentClass || "",
-        student_no: target.dataset.studentNo || "",
-        student_name: target.dataset.studentName || "",
       });
     });
     document.addEventListener("keydown", (event) => {
@@ -1319,8 +1347,9 @@
             };
 
             const records = [];
+            const resolveStudentKey = createStudentKeyResolver();
             rows.forEach((row) => {
-              const rec = {
+              const rec = normalizeLoadedRecord({
                 grade: safe(row[0]),          // A: 학년
                 class_no: safe(row[1]),       // B: 반
                 student_no: safe(row[2]),     // C: 번호
@@ -1334,7 +1363,7 @@
                 registered_yn: parseRegistration(row[21]), // V: 등록여부(Y/N)
                 all_subj_grade: parseGrade(row[COL.all]),
                 conv_grade: parseGrade(row[COL.conv]),
-              };
+              }, records.length, resolveStudentKey);
               if (!rec.result || !rec.univ || !rec.dept || !rec.subtype || !rec.apptype) return;
               if (rec.all_subj_grade === null && rec.conv_grade === null) return;
               records.push(rec);
@@ -1355,6 +1384,53 @@
       const raw = safe(v).toUpperCase();
       return raw === "Y" || raw === "N" ? raw : "";
     }
+    function createStudentKeyResolver() {
+      const keyMap = new Map();
+      let nextSeq = 1;
+      return (recordLike, fallbackIndex = 0) => {
+        const identityParts = [
+          safe(recordLike.grade),
+          safe(recordLike.class_no),
+          safe(recordLike.student_no),
+          safe(recordLike.student_name),
+        ];
+        const hasIdentity = identityParts.some(Boolean);
+        if (!hasIdentity) {
+          return `S${String(fallbackIndex + 1).padStart(5, "0")}`;
+        }
+        const identityKey = identityParts.join("|||");
+        if (!keyMap.has(identityKey)) {
+          keyMap.set(identityKey, `S${String(nextSeq).padStart(5, "0")}`);
+          nextSeq += 1;
+        }
+        return keyMap.get(identityKey);
+      };
+    }
+    function normalizeLoadedRecord(rawRecord, fallbackIndex = 0, resolveStudentKey = null) {
+      const normalized = {
+        grade: safe(rawRecord.grade),
+        class_no: safe(rawRecord.class_no),
+        student_no: safe(rawRecord.student_no),
+        student_name: safe(rawRecord.student_name),
+        region: safe(rawRecord.region),
+        univ: safe(rawRecord.univ),
+        apptype: safe(rawRecord.apptype),
+        subtype: safe(rawRecord.subtype),
+        dept: safe(rawRecord.dept),
+        result: safe(rawRecord.result),
+        registered_yn: parseRegistration(rawRecord.registered_yn),
+        all_subj_grade: parseGrade(rawRecord.all_subj_grade),
+        conv_grade: parseGrade(rawRecord.conv_grade),
+      };
+      normalized.student_key = safe(rawRecord.student_key) || (typeof resolveStudentKey === "function"
+        ? resolveStudentKey(normalized, fallbackIndex)
+        : `S${String(fallbackIndex + 1).padStart(5, "0")}`);
+      return normalized;
+    }
+    function normalizeLoadedRecords(rawRecords = []) {
+      const resolveStudentKey = createStudentKeyResolver();
+      return rawRecords.map((rawRecord, index) => normalizeLoadedRecord(rawRecord, index, resolveStudentKey));
+    }
     function escapeHtml(v) {
       return String(v ?? "")
         .replace(/&/g, "&amp;")
@@ -1369,6 +1445,427 @@
         .replace(/[\\/:*?"<>|]+/g, "_")
         .replace(/\s+/g, " ")
         .slice(0, 80) || "상세데이터";
+    }
+    function serializeForInlineScript(value) {
+      return JSON.stringify(value)
+        .replace(/</g, "\\u003c")
+        .replace(/>/g, "\\u003e")
+        .replace(/&/g, "\\u0026")
+        .replace(/\u2028/g, "\\u2028")
+        .replace(/\u2029/g, "\\u2029");
+    }
+    function escapeInlineScriptContent(text) {
+      return String(text || "").replace(/<\/script/gi, "<\\/script");
+    }
+    function getCurrentReportUiState() {
+      const activeTabBtn = document.querySelector("#report-tabs .tab-btn.active");
+      return {
+        activeTab: activeTabBtn ? activeTabBtn.dataset.tab : "summary",
+        gradeBandModes: { ...gradeBandModes },
+        univTopMode,
+        univTopSort,
+        univDirectorySort,
+        deptFinderSelection: Array.isArray(deptFinderSelection) ? [...deptFinderSelection] : [],
+      };
+    }
+    function sanitizeRecordsForShared(records) {
+      return records.map((record, index) => {
+        const normalized = normalizeLoadedRecord(record, index);
+        return {
+          student_key: normalized.student_key || `S${String(index + 1).padStart(5, "0")}`,
+          class_no: normalized.class_no,
+          region: normalized.region,
+          univ: normalized.univ,
+          apptype: normalized.apptype,
+          subtype: normalized.subtype,
+          dept: normalized.dept,
+          result: normalized.result,
+          registered_yn: normalized.registered_yn,
+          all_subj_grade: normalized.all_subj_grade,
+          conv_grade: normalized.conv_grade,
+        };
+      });
+    }
+    function arrayBufferToBase64(buffer) {
+      const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
+      let binary = "";
+      const chunkSize = 0x8000;
+      for (let index = 0; index < bytes.length; index += chunkSize) {
+        binary += String.fromCharCode(...bytes.subarray(index, index + chunkSize));
+      }
+      return btoa(binary);
+    }
+    async function derivePasswordKey(password, salt, keyUsages) {
+      if (!window.crypto || !window.crypto.subtle) {
+        throw new Error("현재 브라우저는 암호 보호 HTML 저장을 지원하지 않습니다.");
+      }
+      const encoder = new TextEncoder();
+      const baseKey = await crypto.subtle.importKey(
+        "raw",
+        encoder.encode(password),
+        "PBKDF2",
+        false,
+        ["deriveKey"]
+      );
+      return crypto.subtle.deriveKey(
+        {
+          name: "PBKDF2",
+          salt,
+          iterations: 250000,
+          hash: "SHA-256",
+        },
+        baseKey,
+        {
+          name: "AES-GCM",
+          length: 256,
+        },
+        false,
+        keyUsages
+      );
+    }
+    async function encryptExportPayload(password, payload) {
+      const encoder = new TextEncoder();
+      const salt = crypto.getRandomValues(new Uint8Array(16));
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const key = await derivePasswordKey(password, salt, ["encrypt"]);
+      const ciphertext = await crypto.subtle.encrypt(
+        {
+          name: "AES-GCM",
+          iv,
+        },
+        key,
+        encoder.encode(JSON.stringify(payload))
+      );
+      return {
+        salt: arrayBufferToBase64(salt),
+        iv: arrayBufferToBase64(iv),
+        ciphertext: arrayBufferToBase64(ciphertext),
+        iterations: 250000,
+      };
+    }
+    function buildProtectedHtmlBootstrap(encryptedPayload) {
+      return `
+(() => {
+  const encryptedPayload = ${JSON.stringify(encryptedPayload)};
+  window.APP_BUILD_UTC = new Date().toISOString();
+  window.PRELOADED_SHARED = true;
+
+  const style = document.createElement("style");
+  style.textContent = \`
+body.protected-export-locked {
+  overflow: hidden;
+}
+#protectedSharedOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.56);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+#protectedSharedOverlay .overlay-card {
+  width: min(100%, 420px);
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+#protectedSharedOverlay h2 {
+  margin: 0 0 10px 0;
+  font-size: 1.25rem;
+  color: #0f172a;
+}
+#protectedSharedOverlay p {
+  margin: 0 0 16px 0;
+  color: #475569;
+  line-height: 1.55;
+  font-size: 0.93rem;
+}
+#protectedSharedOverlay input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  font-size: 1rem;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+}
+#protectedSharedOverlay button {
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: #111827;
+  color: #ffffff;
+  font-size: 0.98rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+#protectedSharedOverlay button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+#protectedSharedStatus {
+  min-height: 1.2em;
+  margin-top: 12px;
+  color: #b91c1c;
+  font-size: 0.88rem;
+}
+\`;
+  document.head.appendChild(style);
+
+  const showOverlay = () => {
+    document.body.classList.add("protected-export-locked");
+    const overlay = document.createElement("div");
+    overlay.id = "protectedSharedOverlay";
+    overlay.innerHTML = \`
+      <div class="overlay-card">
+        <h2>암호 보호된 공유 보고서</h2>
+        <p>이 파일은 열기 암호가 맞아야 분석 결과를 복호화해서 보여줍니다.</p>
+        <input id="protectedSharedPassword" type="password" placeholder="열기 암호 입력" autocomplete="current-password">
+        <button id="protectedSharedUnlock">열기</button>
+        <div id="protectedSharedStatus"></div>
+      </div>
+    \`;
+    document.body.appendChild(overlay);
+
+    const passwordInput = document.getElementById("protectedSharedPassword");
+    const unlockButton = document.getElementById("protectedSharedUnlock");
+    const statusEl = document.getElementById("protectedSharedStatus");
+
+    const base64ToBytes = (base64) => {
+      const binary = atob(base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return bytes;
+    };
+
+    const unlock = async () => {
+      const password = passwordInput ? passwordInput.value : "";
+      if (!password) {
+        if (statusEl) statusEl.textContent = "암호를 입력하세요.";
+        if (passwordInput) passwordInput.focus();
+        return;
+      }
+
+      unlockButton.disabled = true;
+      if (statusEl) statusEl.textContent = "암호 확인 중...";
+
+      try {
+        const salt = base64ToBytes(encryptedPayload.salt);
+        const iv = base64ToBytes(encryptedPayload.iv);
+        const ciphertext = base64ToBytes(encryptedPayload.ciphertext);
+        const encoder = new TextEncoder();
+        const baseKey = await crypto.subtle.importKey(
+          "raw",
+          encoder.encode(password),
+          "PBKDF2",
+          false,
+          ["deriveKey"]
+        );
+        const key = await crypto.subtle.deriveKey(
+          {
+            name: "PBKDF2",
+            salt,
+            iterations: encryptedPayload.iterations,
+            hash: "SHA-256",
+          },
+          baseKey,
+          {
+            name: "AES-GCM",
+            length: 256,
+          },
+          false,
+          ["decrypt"]
+        );
+        const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, ciphertext);
+        const payload = JSON.parse(new TextDecoder().decode(decrypted));
+        window.PRELOADED_DATA = payload.analysisData;
+        window.PRELOADED_UI_STATE = payload.uiState;
+        document.body.classList.remove("protected-export-locked");
+        overlay.remove();
+
+        const initializeDecryptedView = async () => {
+          if (typeof window.initializePreloadedReport === "function") {
+            await window.initializePreloadedReport();
+          }
+        };
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", () => {
+            initializeDecryptedView();
+          }, { once: true });
+        } else {
+          await initializeDecryptedView();
+        }
+      } catch (error) {
+        if (statusEl) statusEl.textContent = "암호가 올바르지 않거나 파일이 손상되었습니다.";
+        if (passwordInput) {
+          passwordInput.focus();
+          passwordInput.select();
+        }
+      } finally {
+        unlockButton.disabled = false;
+      }
+    };
+
+    unlockButton.addEventListener("click", unlock);
+    if (passwordInput) {
+      passwordInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          unlock();
+        }
+      });
+      setTimeout(() => passwordInput.focus(), 0);
+    }
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", showOverlay, { once: true });
+  } else {
+    showOverlay();
+  }
+})();
+`;
+    }
+    async function buildSharedHtmlDocument(records, uiState = {}, options = {}) {
+      const password = typeof options.password === "string" ? options.password : "";
+      const parser = new DOMParser();
+      const sourceHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      const doc = parser.parseFromString(sourceHtml, "text/html");
+      const heroEl = doc.getElementById("landing-hero");
+      const uploadEl = doc.getElementById("upload-panel");
+      const reportNode = doc.getElementById("report");
+      const statusNode = doc.getElementById("status");
+      const modalNode = doc.getElementById("detail-modal");
+      const sharedExportModalNode = doc.getElementById("shared-export-modal");
+      if (heroEl) heroEl.hidden = true;
+      if (uploadEl) uploadEl.hidden = true;
+      if (reportNode) {
+        reportNode.hidden = false;
+        reportNode.innerHTML = "";
+      }
+      if (statusNode) statusNode.textContent = "";
+      if (modalNode) {
+        modalNode.hidden = true;
+        modalNode.removeAttribute("style");
+        const modalBody = modalNode.querySelector("#detail-modal-body");
+        if (modalBody) modalBody.innerHTML = "";
+      }
+      if (sharedExportModalNode) {
+        sharedExportModalNode.remove();
+      }
+      if (doc.body) {
+        doc.body.style.overflow = "";
+      }
+      const existingPreloadScript = doc.getElementById("preloaded-shared-data");
+      if (existingPreloadScript) existingPreloadScript.remove();
+      const preloadScript = doc.createElement("script");
+      preloadScript.id = "preloaded-shared-data";
+      if (password) {
+        const encryptedPayload = await encryptExportPayload(password, {
+          analysisData: sanitizeRecordsForShared(records),
+          uiState,
+        });
+        preloadScript.textContent = escapeInlineScriptContent(buildProtectedHtmlBootstrap(encryptedPayload));
+      } else {
+        preloadScript.textContent = [
+          `window.APP_BUILD_UTC = ${serializeForInlineScript(new Date().toISOString())};`,
+          "window.PRELOADED_SHARED = true;",
+          `window.PRELOADED_DATA = ${serializeForInlineScript(sanitizeRecordsForShared(records))};`,
+          `window.PRELOADED_UI_STATE = ${serializeForInlineScript(uiState)};`,
+        ].join("\n");
+      }
+      const mainScript = Array.from(doc.querySelectorAll("script"))
+        .find((script) => !script.src && script.textContent.includes("const RESULT_ORDER"));
+      if (mainScript && mainScript.parentNode) {
+        mainScript.parentNode.insertBefore(preloadScript, mainScript);
+      } else if (doc.body) {
+        doc.body.appendChild(preloadScript);
+      }
+      return "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;
+    }
+    async function downloadSharedHtml(options = {}) {
+      if (!currentReportRecords.length) {
+        throw new Error("먼저 보고서를 생성해주세요.");
+      }
+      const password = typeof options.password === "string" ? options.password : "";
+      const htmlContent = await buildSharedHtmlDocument(currentReportRecords, getCurrentReportUiState(), { password });
+      const blob = new Blob(["\uFEFF", htmlContent], { type: "text/html;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `수시입시결과_공유용_${buildExportTimestamp()}.html`;
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(() => {
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }, 0);
+    }
+    function showSharedExportOptionsModal() {
+      const modal = document.createElement("div");
+      modal.id = "shared-export-modal";
+      modal.innerHTML = `
+        <div style="position:fixed; inset:0; z-index:21000; display:flex; align-items:center; justify-content:center; padding:24px; background:rgba(15,23,42,0.42); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);">
+          <div style="width:min(100%, 440px); background:#fff; border:1px solid rgba(15,23,42,0.08); border-radius:18px; box-shadow:0 24px 60px rgba(15,23,42,0.18); padding:24px;">
+            <div style="font-size:18px; font-weight:700; color:#111827; margin-bottom:8px;">공유용 HTML 저장</div>
+            <div style="font-size:13px; line-height:1.6; color:#6b7280; margin-bottom:16px;">열기 암호를 설정하면 저장 파일을 열 때 먼저 암호를 입력해야 합니다. 비워두면 기존처럼 암호 없이 저장됩니다.</div>
+            <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;" for="sharedExportPassword">열기 암호</label>
+            <input id="sharedExportPassword" type="password" placeholder="선택 입력" autocomplete="new-password" style="width:100%; border:1px solid #d1d5db; border-radius:10px; padding:11px 12px; font:inherit; margin-bottom:12px;">
+            <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;" for="sharedExportPasswordConfirm">암호 확인</label>
+            <input id="sharedExportPasswordConfirm" type="password" placeholder="암호를 다시 입력" autocomplete="new-password" style="width:100%; border:1px solid #d1d5db; border-radius:10px; padding:11px 12px; font:inherit;">
+            <div id="sharedExportOptionsError" style="min-height:18px; font-size:12px; color:#b91c1c; margin-top:10px;"></div>
+            <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+              <button type="button" id="cancelSharedExport" style="border:1px solid #d1d5db; background:#fff; color:#374151; padding:9px 14px; border-radius:10px; font:inherit; font-weight:600;">취소</button>
+              <button type="button" id="confirmSharedExport" style="border:1px solid #111827; background:#111827; color:#fff; padding:9px 14px; border-radius:10px; font:inherit; font-weight:600;">HTML 다운로드</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+
+      const passwordInput = document.getElementById("sharedExportPassword");
+      const confirmInput = document.getElementById("sharedExportPasswordConfirm");
+      const errorDiv = document.getElementById("sharedExportOptionsError");
+      const closeModal = () => modal.remove();
+
+      document.getElementById("cancelSharedExport").addEventListener("click", closeModal);
+      document.getElementById("confirmSharedExport").addEventListener("click", async () => {
+        const password = passwordInput ? passwordInput.value : "";
+        const passwordConfirm = confirmInput ? confirmInput.value : "";
+        if ((password || passwordConfirm) && password !== passwordConfirm) {
+          if (errorDiv) errorDiv.textContent = "암호와 확인 입력이 일치하지 않습니다.";
+          if (confirmInput) confirmInput.focus();
+          return;
+        }
+        try {
+          await downloadSharedHtml({ password });
+          closeModal();
+        } catch (error) {
+          console.error(error);
+          if (errorDiv) errorDiv.textContent = error && error.message ? error.message : "공유용 HTML 생성 중 오류가 발생했습니다.";
+        }
+      });
+      modal.addEventListener("click", (event) => {
+        if (event.target === modal.firstElementChild) closeModal();
+      });
+      if (passwordInput) {
+        setTimeout(() => passwordInput.focus(), 0);
+      }
+    }
+    function bindSharedExportButton() {
+      const exportBtn = document.getElementById("export-shared-html-btn");
+      if (!exportBtn) return;
+      exportBtn.onclick = () => showSharedExportOptionsModal();
     }
 
     function sortedSet(setObj) {
@@ -1445,15 +1942,17 @@
       };
     }
 
-    function renderFullReport(records, selectedUniv = "", activeTab = "summary") {
+    function renderFullReport(records, selectedUniv = "", activeTab = "summary", options = {}) {
       resetLazyObservers();
       plotsData = {};
       plotInitialized = {};
-      gradeBandModes = {};
-      univTopMode = DEFAULT_UNIV_TOP_MODE;
-      univTopSort = DEFAULT_UNIV_TOP_SORT;
-      univDirectorySort = DEFAULT_UNIV_DIRECTORY_SORT;
-      deptFinderSelection = [];
+      gradeBandModes = options.gradeBandModes && typeof options.gradeBandModes === "object"
+        ? { ...options.gradeBandModes }
+        : {};
+      univTopMode = options.univTopMode || DEFAULT_UNIV_TOP_MODE;
+      univTopSort = options.univTopSort || DEFAULT_UNIV_TOP_SORT;
+      univDirectorySort = options.univDirectorySort || DEFAULT_UNIV_DIRECTORY_SORT;
+      deptFinderSelection = Array.isArray(options.deptFinderSelection) ? [...options.deptFinderSelection] : [];
       currentReportRecords = records;
 
       const index = buildRecordIndex(records);
@@ -1463,9 +1962,12 @@
         <div class="fixed-header">
           <div class="header-content">
             <div class="header-top">
-              <div class="site-title">강원진학센터 입시분석팀</div>
+              <div class="site-title">2026 강원진학센터 입시분석팀</div>
+              <div class="header-actions">
+                <button type="button" class="header-action-btn" id="export-shared-html-btn">공유용 HTML 저장</button>
+              </div>
             </div>
-          <h2 class="university-title">수시 입시 결과 통계 프로그램 [강원진학센터]</h2>
+          <h2 class="university-title">단위학교 수시 입시 결과 분석 프로그램</h2>
           </div>
         </div>`;
 
@@ -1606,6 +2108,7 @@
         btn.addEventListener("click", () => setActiveTab(btn.dataset.tab));
       });
 
+      bindSharedExportButton();
       bindGradeBandModeToggles(records);
       bindApptypeBandModeToggles(records);
       bindUnivTopModeToggle(records);
@@ -1813,13 +2316,8 @@
 
     function createPlotDataFromGrouped(groupedByResult) {
       const studentLabel = (r) => {
-        const name = r.student_name || "";
-        const g = r.grade || "";
         const c = r.class_no || "";
-        const n = r.student_no || "";
-        const tail = [g, c, n].filter(Boolean).join("-");
-        if (!name && !tail) return "";
-        return tail ? `학생: ${name || ""} (${tail})` : `학생: ${name}`;
+        return c ? `반: ${c}반` : "학생 지원 데이터";
       };
 
       const allTraces = RESULT_ORDER.map((res) => {
@@ -2925,7 +3423,7 @@
     }
 
     function getStudentRecordKey(student) {
-      return `${student.grade || ""}|||${student.class_no || ""}|||${student.student_no || ""}`;
+      return student.student_key || `${student.grade || ""}|||${student.class_no || ""}|||${student.student_no || ""}`;
     }
 
     function buildStudentContextLabel(student) {
@@ -2952,11 +3450,9 @@
             rowOrder: index,
             sortGrade: r.all_subj_grade ?? Number.POSITIVE_INFINITY,
             gradeLabel: formatModalGrade(r.all_subj_grade),
-            grade: r.grade || "",
+            student_key: key,
             class_no: r.class_no || "",
             classLabel: r.class_no || "-",
-            student_no: r.student_no || "",
-            student_name: r.student_name || "",
             apps: [],
           });
         }
@@ -2972,8 +3468,8 @@
         if (a.sortGrade !== b.sortGrade) return a.sortGrade - b.sortGrade;
         const classDiff = String(a.class_no).localeCompare(String(b.class_no), "ko", { numeric: true });
         if (classDiff !== 0) return classDiff;
-        const noDiff = String(a.student_no).localeCompare(String(b.student_no), "ko", { numeric: true });
-        if (noDiff !== 0) return noDiff;
+        const keyDiff = String(a.student_key).localeCompare(String(b.student_key), "ko", { numeric: true });
+        if (keyDiff !== 0) return keyDiff;
         return a.rowOrder - b.rowOrder;
       });
     }
@@ -3003,7 +3499,7 @@
             </tr>
           </thead>
           <tbody>
-            ${rows.map((row) => `<tr class="trend-row-clickable" data-trend-student="true" data-student-grade="${escapeHtml(row.grade || "")}" data-student-class="${escapeHtml(row.class_no || "")}" data-student-no="${escapeHtml(row.student_no || "")}" data-student-name="${escapeHtml(row.student_name || "")}">
+            ${rows.map((row) => `<tr class="trend-row-clickable" data-trend-student="true" data-student-key="${escapeHtml(row.student_key || "")}" data-student-class="${escapeHtml(row.class_no || "")}">
               <td class="trend-sticky-class"><div class="trend-cell-core trend-class-summary"><div class="trend-class-label">${escapeHtml(row.classLabel === "-" ? "-" : `${row.classLabel}반`)}</div><div class="trend-class-count">지원 ${row.apps.length}건</div></div></td>
               <td class="trend-sticky-grade"><div class="trend-cell-core is-compact">${escapeHtml(row.gradeLabel)}</div></td>
               ${Array.from({ length: visibleApps }, (_, index) => {
@@ -3032,10 +3528,8 @@
         const target = event.target instanceof Element ? event.target.closest('[data-trend-student="true"]') : null;
         if (!target) return;
         openStudentDetailModal({
-          grade: target.dataset.studentGrade || "",
+          student_key: target.dataset.studentKey || "",
           class_no: target.dataset.studentClass || "",
-          student_no: target.dataset.studentNo || "",
-          student_name: target.dataset.studentName || "",
         });
       };
     }
@@ -3076,7 +3570,7 @@
           enableStudentLinks ? "detail-row-clickable" : "",
         ].filter(Boolean);
         const rowAttrs = enableStudentLinks
-          ? ` data-student-drilldown="true" data-student-grade="${escapeHtml(r.grade || "")}" data-student-class="${escapeHtml(r.class_no || "")}" data-student-no="${escapeHtml(r.student_no || "")}" data-student-name="${escapeHtml(r.student_name || "")}"`
+          ? ` data-student-drilldown="true" data-student-key="${escapeHtml(getStudentRecordKey(r))}" data-student-class="${escapeHtml(r.class_no || "")}"`
           : "";
         const cells = columns.map((column) => {
           const cellContent = column.render
@@ -3106,7 +3600,7 @@
         if (resultDiff !== 0) return resultDiff;
         const univDiff = (a.univ || "").localeCompare(b.univ || "", "ko");
         if (univDiff !== 0) return univDiff;
-        return (a.student_name || "").localeCompare(b.student_name || "", "ko");
+        return getStudentRecordKey(a).localeCompare(getStudentRecordKey(b), "ko", { numeric: true });
       });
     }
 
@@ -3571,6 +4065,25 @@
         font: { family: "Inter, -apple-system, sans-serif" },
       }, { displayModeBar: false, responsive: true });
     }
+
+    function initializePreloadedReport() {
+      if (!Array.isArray(window.PRELOADED_DATA) || !window.PRELOADED_DATA.length) return;
+      const normalizedRecords = normalizeLoadedRecords(window.PRELOADED_DATA);
+      const preloadedState = window.PRELOADED_UI_STATE && typeof window.PRELOADED_UI_STATE === "object"
+        ? window.PRELOADED_UI_STATE
+        : {};
+      renderFullReport(
+        normalizedRecords,
+        "",
+        preloadedState.activeTab || "summary",
+        preloadedState
+      );
+      setStatus("");
+      setLandingVisibility(false);
+    }
+
+    window.initializePreloadedReport = initializePreloadedReport;
+    initializePreloadedReport();
 
   </script>
 </body>
