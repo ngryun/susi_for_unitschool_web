@@ -4,86 +4,444 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>강원진학센터 단위학교용 수시 입시 결과 통계프로그램</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #f6f4ef;
-      --card: #ffffff;
-      --border: #d9d2c3;
-      --primary: #6b8f71;      /* sage */
-      --primary-dark: #58765e;
-      --accent: #d07a5c;       /* warm terracotta */
-      --text: #2f3c32;
-      --muted: #6a7065;
-      --shadow: 0 10px 28px rgba(47, 60, 50, 0.12);
+      --bg: #f9fafb;
+      --surface: #ffffff;
+      --surface-alt: #f3f4f6;
+      --surface-hover: #f9fafb;
+      --border: #e5e7eb;
+      --border-light: #f0f0f0;
+      --text-primary: #111827;
+      --text-secondary: #6b7280;
+      --text-tertiary: #9ca3af;
+      --brand: #d97706;
+      --brand-light: #fef3c7;
+      --brand-text: #92400e;
+      --success: #059669;
+      --success-light: #ecfdf5;
+      --success-border: #d1fae5;
+      --warning: #d97706;
+      --warning-light: #fffbeb;
+      --warning-border: #fef3c7;
+      --danger: #dc2626;
+      --danger-light: #fef2f2;
+      --danger-border: #fee2e2;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+      --radius: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
     }
-    * { box-sizing: border-box; }
-    body { margin: 0; background: radial-gradient(circle at 20% 20%, rgba(208, 122, 92, 0.08), transparent 30%), radial-gradient(circle at 80% 0%, rgba(107, 143, 113, 0.12), transparent 28%), var(--bg); color: var(--text); font-family: "Noto Sans KR", "Pretendard", system-ui, -apple-system, sans-serif; }
-    .hero { padding: 28px 20px 14px; text-align: center; }
-    .hero h1 { margin: 0 0 8px; font-size: 24px; letter-spacing: -0.2px; }
-    .hero p { margin: 0; color: var(--muted); }
-    .panel { max-width: 1160px; margin: 0 auto 18px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 18px; box-shadow: var(--shadow); }
-    .panel h2 { margin: 0 0 10px; font-size: 18px; letter-spacing: -0.1px; }
-    .field { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 8px 0; }
-    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
-    button { cursor: pointer; border: 1px solid var(--border); background: #eef0eb; color: var(--text); padding: 10px 14px; border-radius: 10px; font-weight: 600; transition: all 0.15s ease; }
-    button:hover { background: #e4e7e0; }
-    button.primary { background: var(--primary); color: #fff; border-color: var(--primary-dark); box-shadow: 0 6px 12px rgba(107, 143, 113, 0.25); }
-    button.primary:hover { background: var(--primary-dark); }
-    button:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
-    #status { margin-top: 6px; color: var(--muted); font-size: 14px; }
-    .layout { max-width: 1200px; margin: 0 auto 32px; display: flex; gap: 16px; padding: 0 12px; }
-    .fixed-header { position: sticky; top: 0; background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(8px); padding: 12px 0; box-shadow: 0 6px 18px rgba(0,0,0,0.08); z-index: 50; border-bottom: 1px solid #e7e1d5; }
-    .header-content { max-width: 1200px; margin: 0 auto; padding: 0 12px; display: flex; flex-direction: column; gap: 8px; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Hero */
+    .hero {
+      padding: 48px 24px 24px;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.025em;
+      margin-bottom: 8px;
+    }
+    .hero p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    /* Upload Panel */
+    .panel {
+      max-width: 640px;
+      margin: 0 auto 32px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .panel h2 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .field {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    input[type="file"] {
+      flex: 1;
+      min-width: 200px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 8px 12px;
+      color: var(--text-primary);
+      font-size: 13px;
+      font-family: inherit;
+      transition: border-color 0.15s;
+    }
+    input[type="file"]:hover { border-color: #d1d5db; }
+    input[type="file"]:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-light); }
+
+    /* Buttons */
+    button {
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-primary);
+      padding: 8px 16px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 500;
+      font-family: inherit;
+      transition: all 0.15s ease;
+      line-height: 1.5;
+    }
+    button:hover { background: var(--surface-alt); }
+    button.primary {
+      background: var(--text-primary);
+      color: #fff;
+      border-color: var(--text-primary);
+    }
+    button.primary:hover { background: #374151; border-color: #374151; }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+    #status {
+      margin-top: 12px;
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    /* Layout */
+    .layout { max-width: 1120px; margin: 0 auto 48px; padding: 0 24px; }
+
+    /* Fixed Header */
+    .fixed-header {
+      position: sticky;
+      top: 0;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 16px 0;
+      z-index: 50;
+      border-bottom: 1px solid var(--border);
+    }
+    .header-content {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
     .header-top { display: flex; align-items: center; justify-content: space-between; }
-    .site-title { font-weight: 700; color: var(--primary-dark); font-size: 14px; letter-spacing: 0.2px; }
-    .university-title { margin: 0; text-align: center; font-size: 20px; font-weight: 800; color: var(--text); }
-    .controls-legend-wrapper { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
-    .grade-toggle-container, .legend-container { background: #f1eee7; border: 1px solid var(--border); border-radius: 12px; padding: 10px; box-shadow: 0 4px 12px rgba(47,60,50,0.08); }
-    .grade-toggle-btn { padding: 9px 14px; margin-right: 6px; border: 1px solid #cfc6b6; border-radius: 9px; background: #fff; font-weight: 700; cursor: pointer; color: var(--text); }
-    .grade-toggle-btn.active { background: var(--accent); color: #fff; border-color: #b6654c; box-shadow: 0 0 8px rgba(208, 122, 92, 0.45); }
-    .legend-items-wrapper { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-    .legend-item { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: var(--text); }
-    .legend-marker { font-size: 18px; }
-    .legend-pass { color: #5f8669; }
-    .legend-wait { color: #7cab7c; }
-    .legend-fail { color: #d07a5c; }
-    .axis-label { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 4px; }
-    .toc-container { flex: 0 0 220px; position: sticky; top: 140px; align-self: flex-start; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 14px; max-height: calc(100vh - 180px); overflow-y: auto; box-shadow: var(--shadow); }
-    .toc-header { font-weight: 800; margin-bottom: 10px; font-size: 16px; color: var(--text); letter-spacing: -0.1px; }
-    .toc-university { font-weight: 700; cursor: pointer; padding: 6px 6px; border-radius: 8px; color: var(--primary-dark); transition: background 0.15s; }
-    .toc-university:hover { background: rgba(107, 143, 113, 0.12); }
-    .toc-subitems { margin-left: 10px; }
-    .toc-subtype-item, .toc-dept-item { font-size: 13px; padding: 4px 6px; border-radius: 6px; cursor: pointer; color: #394639; transition: background 0.15s; }
-    .toc-subtype-item:hover, .toc-dept-item:hover { background: rgba(208, 122, 92, 0.12); }
-    .main-content { flex: 1 1 auto; min-width: 0; }
-    .dept-container { margin-bottom: 26px; border: 1px solid var(--border); border-radius: 14px; padding: 20px; background: linear-gradient(180deg, #ffffff, #fbf8f2); box-shadow: var(--shadow); }
-    .dept-header { margin: 0 0 16px; font-weight: 800; font-size: 20px; color: var(--text); border-bottom: 2px solid var(--primary); padding-bottom: 10px; letter-spacing: -0.2px; }
-    .subtype-container { margin-bottom: 18px; border: 1px solid #e4ddcf; border-radius: 12px; padding: 14px; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.04); }
-    .subtype-header { margin: 0 0 10px; font-weight: 700; font-size: 17px; color: #394639; }
-    .visualization-container { display: flex; flex-direction: column; gap: 10px; }
-    .plot-container { width: 100%; height: 220px; }
-    .stats-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
-    .stats-item { padding: 7px 11px; border-radius: 8px; background: #eef0eb; border: 1px solid #d6cebf; font-size: 13px; }
-    .stats-total { font-weight: 800; background: #e4e0d7; }
-    .stats-pass { border-left: 4px solid var(--primary); }
-    .stats-wait { border-left: 4px solid #7cab7c; }
-    .stats-fail { border-left: 4px solid #d26c5b; }
-    .additional-stats-container { margin-top: 6px; font-size: 13px; }
-    .stats-table { width: 100%; border-collapse: collapse; margin-top: 6px; }
-    .stats-table th, .stats-table td { border: 1px solid #e4ddcf; padding: 7px; text-align: center; }
-    .stats-table th { background: #f1ede5; font-weight: 700; }
-    .pass-row td { background: rgba(107, 143, 113, 0.08); }
-    .fail-row td { background: rgba(210, 108, 91, 0.08); }
-    .waitlist-row td { background: rgba(124, 171, 124, 0.08); }
-    .filter-info { margin: 10px 0; background: rgba(107, 143, 113, 0.12); border: 1px solid var(--border); padding: 10px; border-radius: 10px; }
-    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
-    .card { border: 1px solid var(--border); border-radius: 12px; padding: 12px; background: #fff; box-shadow: 0 6px 14px rgba(47,60,50,0.08); }
-    .card h3 { margin: 0 0 8px; font-size: 15px; letter-spacing: -0.05px; }
-    .full-width { grid-column: 1 / -1; }
-    .empty { padding: 16px; text-align: center; color: var(--muted); }
+    .site-title {
+      font-weight: 500;
+      color: var(--text-tertiary);
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .university-title {
+      margin: 0;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.025em;
+    }
+    .main-content { min-width: 0; }
+
+    /* Tabs */
+    .tab-bar {
+      display: flex;
+      gap: 4px;
+      margin: 16px 0 24px;
+      background: var(--surface-alt);
+      border-radius: var(--radius);
+      padding: 4px;
+      width: fit-content;
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 13px;
+      transition: all 0.15s;
+    }
+    .tab-btn:hover { color: var(--text-primary); background: rgba(255,255,255,0.5); }
+    .tab-btn.active {
+      background: var(--surface);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-sm);
+      font-weight: 600;
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* University Picker */
+    .univ-picker {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .univ-picker label {
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    .univ-picker select {
+      min-width: 280px;
+      max-width: 100%;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 8px 12px;
+      background: var(--surface);
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.15s;
+    }
+    .univ-picker select:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-light); }
+
+    /* Department Container */
+    .dept-container {
+      margin-bottom: 24px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+      animation: fade-up 0.3s ease both;
+    }
+    .dept-header {
+      margin: 0 0 20px;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--text-primary);
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      letter-spacing: -0.025em;
+    }
+    .section-overall .dept-header,
+    .section-top20 .dept-header { border-bottom-color: var(--border); }
+
+    /* Subtype Container */
+    .subtype-container {
+      margin-bottom: 16px;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 16px;
+      background: var(--surface);
+    }
+    .subtype-container.level-1 { margin-left: 0; background: var(--surface-alt); }
+    .subtype-container.level-2 { margin-left: 0; background: var(--surface); }
+    .subtype-header {
+      margin: 0 0 12px;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+    .subtype-header.is-medium { font-size: 14px; }
+    .subtype-header.is-small { font-size: 13px; color: var(--text-secondary); }
+    .subtype-header.is-dept { color: var(--text-primary); font-weight: 600; }
+
+    /* Visualization */
+    .visualization-container { display: flex; flex-direction: column; gap: 12px; }
+    .plot-container { width: 100%; height: 232px; }
+    .plot-container.h-260 { height: 260px; }
+    .plot-container.h-280 { height: 280px; }
+    .section-spacer { margin-top: 12px; }
+
+    /* Stats */
+    .stats-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .stats-item {
+      padding: 6px 12px;
+      border-radius: 6px;
+      background: var(--surface-alt);
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .stats-total {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .stats-pass { color: var(--success); }
+    .stats-wait { color: var(--warning); }
+    .stats-fail { color: var(--danger); }
+
+    /* Detail Stats */
+    .additional-stats-container { margin-top: 8px; font-size: 13px; }
+    .stats-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 13px;
+    }
+    .stats-table th, .stats-table td {
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      text-align: center;
+    }
+    .stats-table th {
+      background: var(--surface-alt);
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 12px;
+      text-transform: none;
+    }
+    .pass-row td { background: var(--success-light); }
+    .fail-row td { background: var(--danger-light); }
+    .waitlist-row td { background: var(--warning-light); }
+
+    /* Filter Info */
+    .filter-info {
+      margin: 0 0 20px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 13px;
+    }
+
+    /* Grid & Cards */
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      background: var(--surface);
+    }
+    .card h3 {
+      margin: 0 0 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      letter-spacing: 0;
+    }
+    .empty {
+      padding: 32px 16px;
+      text-align: center;
+      color: var(--text-tertiary);
+      font-size: 14px;
+    }
+
+    /* App Type Chips */
+    .apptype-chip-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .apptype-chip {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
+      background: var(--surface);
+      transition: box-shadow 0.15s;
+      animation: fade-up 0.3s ease both;
+    }
+    .apptype-chip:hover { box-shadow: var(--shadow-md); }
+    .apptype-chip-title {
+      margin: 0 0 6px;
+      font-size: 13px;
+      line-height: 1.3;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .apptype-chip-count {
+      margin: 0 0 4px;
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .apptype-chip-rate-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .apptype-chip-rate-label {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      font-weight: 500;
+    }
+    .apptype-chip-rate-value {
+      font-size: 18px;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--success);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .apptype-chip-bar {
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--surface-alt);
+      overflow: hidden;
+    }
+    .apptype-chip-bar > span {
+      display: block;
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     @media (max-width: 960px) {
-      .layout { flex-direction: column; }
-      .toc-container { position: static; max-height: none; width: 100%; }
+      .hero { padding: 32px 16px 16px; }
+      .hero h1 { font-size: 20px; }
+      .layout { padding: 0 16px; }
+      .apptype-chip-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+      .apptype-chip-count { font-size: 22px; }
+      .apptype-chip-rate-value { font-size: 16px; }
+      .tab-bar { overflow-x: auto; white-space: nowrap; padding-bottom: 2px; width: auto; }
+      .univ-picker select { min-width: 100%; }
+      .dept-container { padding: 16px; border-radius: var(--radius-lg); }
+      .panel { margin: 0 16px 24px; }
     }
   </style>
 </head>
@@ -111,9 +469,9 @@
   <script>
     const RESULT_ORDER = ["합격", "충원합격", "불합격"];
     const COLOR_MAP = {
-      "합격": { border: "#5f8669", fill: "rgba(95, 134, 105, 0.30)" },      // sage
-      "충원합격": { border: "#7cab7c", fill: "rgba(124, 171, 124, 0.28)" }, // lighter sage
-      "불합격": { border: "#d07a5c", fill: "rgba(208, 122, 92, 0.32)" },    // warm terracotta
+      "합격": { border: "#059669", fill: "rgba(5, 150, 105, 0.25)" },
+      "충원합격": { border: "#d97706", fill: "rgba(217, 119, 6, 0.22)" },
+      "불합격": { border: "#dc2626", fill: "rgba(220, 38, 38, 0.20)" },
     };
     const SYMBOL_MAP = { "합격": "circle", "충원합격": "triangle-up", "불합격": "x" };
     const Y_POS = { "합격": 0.01, "충원합격": 0.0, "불합격": -0.03 };
@@ -124,16 +482,17 @@
     const reportEl = document.getElementById("report");
     const generateBtn = document.getElementById("generate-btn");
 
-    let currentGradeType = "all_subj";
     let plotsData = {};
     let plotInitialized = {};
-    let lastRecords = null;
+    let plotObserver = null;
+    let auxObserver = null;
+    let auxRenderers = {};
 
     generateBtn.addEventListener("click", handleGenerate);
 
     function setStatus(msg, isError = false) {
       statusEl.textContent = msg;
-      statusEl.style.color = isError ? "#c0392b" : "#607089";
+      statusEl.style.color = isError ? "#dc2626" : "#6b7280";
     }
 
     async function handleGenerate() {
@@ -149,7 +508,6 @@
           setStatus("유효한 데이터가 없습니다. 필수 컬럼을 확인하세요.", true);
           return;
         }
-        lastRecords = records;
         renderFullReport(records);
         setStatus(`총 ${records.length}건 로드 완료. 보고서가 생성되었습니다.`);
       } catch (e) {
@@ -219,16 +577,88 @@
     function safe(v) { return v === undefined || v === null ? "" : String(v).trim(); }
     function parseGrade(v) { const n = parseFloat(v); return Number.isFinite(n) ? n : null; }
 
-    function renderFullReport(records) {
+    function sortedSet(setObj) {
+      return Array.from(setObj).filter(Boolean).sort();
+    }
+
+    function sortedMapKeys(mapObj) {
+      if (!mapObj) return [];
+      return Array.from(mapObj.keys()).filter(Boolean).sort();
+    }
+
+    function getOrCreateArray(mapObj, key) {
+      if (!mapObj.has(key)) mapObj.set(key, []);
+      return mapObj.get(key);
+    }
+
+    function getOrCreateMap(mapObj, key) {
+      if (!mapObj.has(key)) mapObj.set(key, new Map());
+      return mapObj.get(key);
+    }
+
+    function resetLazyObservers() {
+      if (plotObserver) {
+        plotObserver.disconnect();
+        plotObserver = null;
+      }
+      if (auxObserver) {
+        auxObserver.disconnect();
+        auxObserver = null;
+      }
+      auxRenderers = {};
+    }
+
+    function buildRecordIndex(records) {
+      const univSet = new Set();
+      const deptSet = new Set();
+      const apptypeSet = new Set();
+      const subtypeSet = new Set();
+
+      const byUnivApptype = new Map();
+      const byUnivSubtype = new Map();
+      const byUnivDept = new Map();
+      const byUnivDeptSubtype = new Map();
+
+      records.forEach((rec) => {
+        univSet.add(rec.univ);
+        deptSet.add(rec.dept);
+        apptypeSet.add(rec.apptype);
+        subtypeSet.add(rec.subtype);
+
+        const apMap = getOrCreateMap(byUnivApptype, rec.univ);
+        getOrCreateArray(apMap, rec.apptype).push(rec);
+
+        const stMap = getOrCreateMap(byUnivSubtype, rec.univ);
+        getOrCreateArray(stMap, rec.subtype).push(rec);
+
+        const deptMap = getOrCreateMap(byUnivDept, rec.univ);
+        getOrCreateArray(deptMap, rec.dept).push(rec);
+
+        const deptSubtypeMapByUniv = getOrCreateMap(byUnivDeptSubtype, rec.univ);
+        const deptSubtypeMap = getOrCreateMap(deptSubtypeMapByUniv, rec.dept);
+        getOrCreateArray(deptSubtypeMap, rec.subtype).push(rec);
+      });
+
+      return {
+        univs: sortedSet(univSet),
+        depts: sortedSet(deptSet),
+        apptypes: sortedSet(apptypeSet),
+        subtypes: sortedSet(subtypeSet),
+        byUnivApptype,
+        byUnivSubtype,
+        byUnivDept,
+        byUnivDeptSubtype,
+      };
+    }
+
+    function renderFullReport(records, selectedUniv = "", activeTab = "summary") {
+      resetLazyObservers();
       plotsData = {};
       plotInitialized = {};
-      currentGradeType = "all_subj";
 
-      const unique = (arr) => Array.from(new Set(arr)).filter(Boolean).sort();
-      const univs = unique(records.map((r) => r.univ));
-      const depts = unique(records.map((r) => r.dept));
-      const apptypes = unique(records.map((r) => r.apptype));
-      const subtypes = unique(records.map((r) => r.subtype));
+      const index = buildRecordIndex(records);
+      const { univs, depts, apptypes, subtypes } = index;
+      const safeSelectedUniv = univs.includes(selectedUniv) ? selectedUniv : "";
 
       const header = `
         <div class="fixed-header">
@@ -237,198 +667,243 @@
               <div class="site-title">강원진학센터 입시분석팀</div>
             </div>
           <h2 class="university-title">수시 입시 결과 통계 프로그램 [강원진학센터]</h2>
-            <div class="controls-legend-wrapper">
-              <div class="grade-toggle-container">
-                <button id="btn-conv" class="grade-toggle-btn">환산등급</button>
-                <button id="btn-all" class="grade-toggle-btn active">전교과100 등급</button>
-              </div>
-              <div class="legend-container">
-                <div class="legend-items-wrapper">
-                  <div class="legend-item"><span class="legend-marker legend-pass">&#9679;</span><span>합격 (Y축 상단)</span></div>
-                  <div class="legend-item"><span class="legend-marker legend-wait">&#9650;</span><span>충원합격 (Y축 중앙)</span></div>
-                  <div class="legend-item"><span class="legend-marker legend-fail">&#10006;</span><span>불합격 (Y축 하단)</span></div>
-                </div>
-                <div class="axis-label"><span>↔</span><span id="grade-label">전교과100 등급</span> (1~9)</div>
-              </div>
-            </div>
           </div>
         </div>`;
 
       const layout = `
         <div class="layout">
-          <aside class="toc-container">
-            <div class="toc-header">목차</div>
-            <div id="toc-content"></div>
-          </aside>
-          <main class="main-content" id="content-area"></main>
+          <main class="main-content">
+            <div class="tab-bar" id="report-tabs">
+              <button type="button" class="tab-btn ${activeTab === "summary" ? "active" : ""}" data-tab="summary">전체데이터요약</button>
+              <button type="button" class="tab-btn ${activeTab === "univ" ? "active" : ""}" data-tab="univ">대학별조회</button>
+            </div>
+            <section id="tab-summary" class="tab-panel ${activeTab === "summary" ? "active" : ""}"></section>
+            <section id="tab-univ" class="tab-panel ${activeTab === "univ" ? "active" : ""}"></section>
+          </main>
         </div>`;
 
       reportEl.hidden = false;
       reportEl.innerHTML = header + layout;
 
-      const contentEl = document.getElementById("content-area");
+      const summaryEl = document.getElementById("tab-summary");
+      const univEl = document.getElementById("tab-univ");
       let plotCounter = 1;
 
       const filterSummary = `
         <div class="filter-info">
           총 ${records.length}건 · 대학 ${univs.length} · 모집단위 ${depts.length} · 전형유형 ${apptypes.length} · 전형 ${subtypes.length}
         </div>`;
-      contentEl.insertAdjacentHTML("beforeend", filterSummary);
+      summaryEl.insertAdjacentHTML("beforeend", filterSummary);
 
-      // 전체 요약을 최상단에 배치
-      const overallBlock = buildPlotBlock(records, plotCounter, "전체 데이터", true, true, true, true);
+      const overallBlock = buildPlotBlock(records, plotCounter, "전체 데이터", true, false, true, true, false, true, false);
       plotsData[plotCounter] = overallBlock.data;
-      contentEl.insertAdjacentHTML("beforeend", `<div class="dept-container" id="overall-summary">
-          <div class="dept-header" style="border-bottom:2px solid #e74c3c;">전체 데이터 요약</div>
+      summaryEl.insertAdjacentHTML("beforeend", `<div class="dept-container section-overall" id="overall-summary">
+          <div class="dept-header">전체 데이터 요약</div>
           ${overallBlock.html}
         </div>`);
       plotCounter++;
 
-      // 지원 상위 대학 TOP20
-      contentEl.insertAdjacentHTML("beforeend", `<div class="dept-container" id="univ-top-global">
-          <div class="dept-header" style="border-bottom:2px solid var(--primary);">지원 상위 대학 TOP 20 합/충원/불합격</div>
+      summaryEl.insertAdjacentHTML("beforeend", `<div class="dept-container section-top20" id="univ-top-global">
+          <div class="dept-header">지원 상위 대학 TOP 20 합/충원/불합격</div>
           <div class="card">
             <div id="univ-top-chart" class="plot-container"></div>
           </div>
         </div>`);
 
-      // 대학별 섹션
-      univs.forEach((univ, uIdx) => {
-        const dfUniv = records.filter((r) => r.univ === univ);
-        let html = `<div class="dept-container" id="univ-${uIdx + 1}">
-            <div class="dept-header">${univ}</div>`;
+      univEl.innerHTML = `<div class="dept-container">
+          <div class="dept-header">대학별 조회</div>
+          <div class="univ-picker">
+            <label for="univ-select">대학 선택</label>
+            <select id="univ-select">
+              <option value="">대학을 선택하세요</option>
+            </select>
+          </div>
+          <div id="univ-detail-area"></div>
+        </div>`;
 
-        // 전형유형별 요약
-        const apptypesAll = unique(dfUniv.map((r) => r.apptype));
-        if (apptypesAll.length) {
-          html += `<div class="subtype-container" id="apptype-summary-${uIdx + 1}">
-              <div class="subtype-header">전형유형별 요약</div>`;
-          apptypesAll.forEach((ap, aIdx) => {
-            const subset = dfUniv.filter((r) => r.apptype === ap);
-            const block = buildPlotBlock(subset, plotCounter, `${ap}`, true);
-            html += `<div class="subtype-container" id="apptype-${uIdx + 1}-${aIdx + 1}" style="background:#fefefe; margin-left: 8px;">
-                <div class="subtype-header" style="font-size:16px;">${ap}</div>
-                ${block.html}
-              </div>`;
-            plotsData[plotCounter] = block.data;
-            plotCounter++;
-          });
-          html += `</div>`;
-        }
+      const univDetailEl = document.getElementById("univ-detail-area");
+      if (safeSelectedUniv) {
+        const selected = buildUniversityDetailSection(safeSelectedUniv, index, plotCounter);
+        univDetailEl.innerHTML = selected.html;
+        plotCounter = selected.nextPlotId;
+      } else {
+        univDetailEl.innerHTML = '<div class="empty">대학을 선택하면 해당 대학의 세부 결과가 표시됩니다.</div>';
+      }
 
-        // 세부유형별 요약
-        const subtypesAll = unique(dfUniv.map((r) => r.subtype));
-        if (subtypesAll.length) {
-          html += `<div class="subtype-container" id="summary-container-${uIdx + 1}">
-              <div class="subtype-header">세부유형별 요약</div>`;
-          subtypesAll.forEach((st, sIdx) => {
-            const subset = dfUniv.filter((r) => r.subtype === st);
-            const block = buildPlotBlock(subset, plotCounter, `${st}`, true);
-            html += `<div class="subtype-container" id="subtype-summary-${uIdx + 1}-${sIdx + 1}" style="background:#fefefe; margin-left: 8px;">
-                <div class="subtype-header" style="font-size:16px;">${st}</div>
-                ${block.html}
-              </div>`;
-            plotsData[plotCounter] = block.data;
-            plotCounter++;
-          });
-          html += `</div>`;
-        }
-
-        // 모집단위/전형별 상세
-        const univDepts = unique(dfUniv.map((r) => r.dept));
-        univDepts.forEach((dept, dIdx) => {
-          const dfDept = dfUniv.filter((r) => r.dept === dept);
-          html += `<div class="subtype-container" id="dept-container-${uIdx + 1}-${dIdx + 1}">
-              <div class="subtype-header" style="color:#34495e;">${dIdx + 1}) ${dept}</div>`;
-          const deptSubtypes = unique(dfDept.map((r) => r.subtype));
-          deptSubtypes.forEach((st, sIdx) => {
-            const subset = dfDept.filter((r) => r.subtype === st);
-            if (!subset.length) return;
-            const block = buildPlotBlock(subset, plotCounter, `${st}`, true);
-            html += `<div class="subtype-container" id="subtype-${uIdx + 1}-${dIdx + 1}-${sIdx + 1}" style="margin-left: 10px; background:#fefefe;">
-                <div class="subtype-header" style="font-size:15px;">${sIdx + 1}) ${st}</div>
-                ${block.html}
-              </div>`;
-            plotsData[plotCounter] = block.data;
-            plotCounter++;
-          });
-          html += `</div>`;
-        });
-
-        html += `</div>`;
-        contentEl.insertAdjacentHTML("beforeend", html);
+      document.querySelectorAll("#report-tabs .tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => setActiveTab(btn.dataset.tab));
       });
 
-      bindGradeToggle();
-      initPlots();
-      buildTOC();
+      const univSelect = document.getElementById("univ-select");
+      if (univSelect) {
+        univs.forEach((univ) => {
+          const opt = document.createElement("option");
+          opt.value = univ;
+          opt.textContent = univ;
+          univSelect.appendChild(opt);
+        });
+        univSelect.value = safeSelectedUniv;
+        univSelect.addEventListener("change", (e) => {
+          renderFullReport(records, e.target.value, "univ");
+        });
+      }
+
+      initLazyRendering(records);
     }
 
-    function buildPlotBlock(dataArr, plotId, title, showStats = true, includeHist = false, includeBands = false, includeApptype = false) {
-      const convStats = computeStats(dataArr, "conv_grade");
-      const allStats = computeStats(dataArr, "all_subj_grade");
-      const convDetail = computeAdditionalStats(dataArr, "conv_grade");
-      const allDetail = computeAdditionalStats(dataArr, "all_subj_grade");
-      const plotData = createPlotData(dataArr);
-      const statsHtmlConv = showStats ? createStatsHtml(convStats, plotId, true) : "";
-      const statsHtmlAll = showStats ? createStatsHtml(allStats, plotId, false) : "";
-      const detailConv = showStats ? createDetailTable(convDetail, "환산등급") : "";
-      const detailAll = showStats ? createDetailTable(allDetail, "전교과등급") : "";
+    function setActiveTab(tabName) {
+      document.querySelectorAll("#report-tabs .tab-btn").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.tab === tabName);
+      });
+      document.querySelectorAll(".tab-panel").forEach((panel) => {
+        panel.classList.toggle("active", panel.id === `tab-${tabName}`);
+      });
+      requestAnimationFrame(() => {
+        updateVisiblePlots();
+      });
+    }
 
+    function buildUniversityDetailSection(univ, index, startPlotId) {
+      let plotCounter = startPlotId;
+      let html = `<div class="dept-container"><div class="dept-header">${univ}</div>`;
+
+      const apptypeMap = index.byUnivApptype.get(univ) || new Map();
+      const apptypesAll = sortedMapKeys(apptypeMap);
+      if (apptypesAll.length) {
+        html += `<div class="subtype-container"><div class="subtype-header">전형유형별 요약</div>`;
+        apptypesAll.forEach((ap) => {
+          const subset = apptypeMap.get(ap) || [];
+          const block = buildPlotBlock(subset, plotCounter, `${ap}`, true);
+          html += `<div class="subtype-container level-1">
+              <div class="subtype-header is-medium">${ap}</div>
+              ${block.html}
+            </div>`;
+          plotsData[plotCounter] = block.data;
+          plotCounter++;
+        });
+        html += `</div>`;
+      }
+
+      const subtypeMap = index.byUnivSubtype.get(univ) || new Map();
+      const subtypesAll = sortedMapKeys(subtypeMap);
+      if (subtypesAll.length) {
+        html += `<div class="subtype-container"><div class="subtype-header">세부유형별 요약</div>`;
+        subtypesAll.forEach((st) => {
+          const subset = subtypeMap.get(st) || [];
+          const block = buildPlotBlock(subset, plotCounter, `${st}`, true);
+          html += `<div class="subtype-container level-1">
+              <div class="subtype-header is-medium">${st}</div>
+              ${block.html}
+            </div>`;
+          plotsData[plotCounter] = block.data;
+          plotCounter++;
+        });
+        html += `</div>`;
+      }
+
+      const deptMap = index.byUnivDept.get(univ) || new Map();
+      const deptSubtypeByUniv = index.byUnivDeptSubtype.get(univ) || new Map();
+      const univDepts = sortedMapKeys(deptMap);
+      univDepts.forEach((dept, dIdx) => {
+        const deptSubtypeMap = deptSubtypeByUniv.get(dept) || new Map();
+        html += `<div class="subtype-container">
+            <div class="subtype-header is-dept">${dIdx + 1}) ${dept}</div>`;
+        const deptSubtypes = sortedMapKeys(deptSubtypeMap);
+        deptSubtypes.forEach((st, sIdx) => {
+          const subset = deptSubtypeMap.get(st) || [];
+          if (!subset.length) return;
+          const block = buildPlotBlock(subset, plotCounter, `${st}`, true);
+          html += `<div class="subtype-container level-2">
+              <div class="subtype-header is-small">${sIdx + 1}) ${st}</div>
+              ${block.html}
+            </div>`;
+          plotsData[plotCounter] = block.data;
+          plotCounter++;
+        });
+        html += `</div>`;
+      });
+
+      html += `</div>`;
+      return { html, nextPlotId: plotCounter };
+    }
+
+    function buildPlotBlock(dataArr, plotId, title, showStats = true, includeHist = false, includeBands = false, includeApptype = false, includeScatter = true, prioritizeApptype = false, showAllDetail = true) {
+      const groupedByResult = groupByResult(dataArr);
+      const allStats = computeStatsFromGrouped(groupedByResult, "all_subj_grade");
+      const allDetail = computeAdditionalStatsFromGrouped(groupedByResult, "all_subj_grade");
+      const plotData = includeScatter ? createPlotDataFromGrouped(groupedByResult) : null;
+      const statsHtmlAll = showStats ? createStatsHtml(allStats, plotId, false) : "";
+      const detailAll = showStats && showAllDetail ? createDetailTable(allDetail, "전교과등급") : "";
+
+      let apptypeHtml = "";
+      let histHtml = "";
+      let bandHtml = "";
       let extraHtml = "";
-      if (includeHist) {
-        extraHtml += `<div class="grid-2" style="margin-top:10px;">
-            <div class="card">
-              <h3>전교과등급 히스토그램</h3>
-              <div id="hist-all-${plotId}" class="plot-container" style="height:260px;"></div>
-            </div>
-            <div class="card">
-              <h3>환산등급 히스토그램</h3>
-              <div id="hist-conv-${plotId}" class="plot-container" style="height:260px;"></div>
-            </div>
-          </div>`;
-      }
-      if (includeBands) {
-        extraHtml += `<div class="grid-2" style="margin-top:10px;">
-            <div class="card">
-              <h3>전교과 등급대별 합격/불합격</h3>
-              <div id="band-bar-${plotId}" class="plot-container" style="height:280px;"></div>
-            </div>
-            <div class="card">
-              <h3>등급대별 통계</h3>
-              <div id="band-table-${plotId}"></div>
-            </div>
-          </div>`;
-      }
+      let topHtml = "";
+      let bottomHtml = "";
+
       if (includeApptype) {
-        extraHtml += `<div class="grid-2" style="margin-top:10px;">
+        apptypeHtml += `<div class="section-spacer">
             <div class="card">
-              <h3>전형유형별 합/불 현황</h3>
-              <div id="apptype-bar-${plotId}" class="plot-container" style="height:280px;"></div>
-            </div>
-            <div class="card">
-              <h3>전형유형별 통계</h3>
+              <h3>전형별 현황</h3>
               <div id="apptype-table-${plotId}"></div>
             </div>
           </div>`;
       }
+      if (includeHist) {
+        histHtml += `<div class="grid-2 section-spacer">
+            <div class="card">
+              <h3>전교과등급 히스토그램</h3>
+              <div id="hist-all-${plotId}" class="plot-container h-260"></div>
+            </div>
+            <div class="card">
+              <h3>환산등급 히스토그램</h3>
+              <div id="hist-conv-${plotId}" class="plot-container h-260"></div>
+            </div>
+          </div>`;
+      }
+      if (includeBands) {
+        bandHtml += `<div class="section-spacer">
+            <div class="card">
+              <h3>전교과 등급대별 합격/불합격</h3>
+              <div id="band-bar-${plotId}" class="plot-container h-280"></div>
+            </div>
+          </div>`;
+      }
+
+      if (prioritizeApptype) {
+        topHtml = apptypeHtml;
+        bottomHtml = histHtml + bandHtml;
+      } else {
+        extraHtml = histHtml + bandHtml + apptypeHtml;
+      }
 
       const html = `
         <div class="visualization-container">
+          ${topHtml}
           <div class="plot-stats-wrapper">
-            <div id="conv-stats-${plotId}" class="stats-container" style="display:none;">${statsHtmlConv}</div>
             <div id="all-stats-${plotId}" class="stats-container">${statsHtmlAll}</div>
-            <div class="plot-container" id="plot-${plotId}"></div>
-            <div class="additional-stats-container" id="conv-detail-${plotId}" style="display:none;">${detailConv}</div>
-            <div class="additional-stats-container" id="all-detail-${plotId}">${detailAll}</div>
+            ${includeScatter ? `<div class="plot-container" id="plot-${plotId}"></div>` : ""}
+            ${showAllDetail ? `<div class="additional-stats-container" id="all-detail-${plotId}">${detailAll}</div>` : ""}
           </div>
           ${extraHtml}
+          ${bottomHtml}
         </div>`;
 
       return { html, data: plotData };
     }
 
-    function createPlotData(dataArr) {
+    function groupByResult(dataArr) {
+      const grouped = {};
+      grouped._total = dataArr.length;
+      RESULT_ORDER.forEach((res) => { grouped[res] = []; });
+      dataArr.forEach((row) => {
+        if (grouped[row.result]) grouped[row.result].push(row);
+      });
+      return grouped;
+    }
+
+    function createPlotDataFromGrouped(groupedByResult) {
       const studentLabel = (r) => {
         const name = r.student_name || "";
         const g = r.grade || "";
@@ -439,64 +914,52 @@
         return tail ? `학생: ${name || ""} (${tail})` : `학생: ${name}`;
       };
 
-      const convTraces = RESULT_ORDER.map((res) => {
-        const rows = dataArr.filter((r) => r.result === res && r.conv_grade !== null);
-        return {
-          x: rows.map((r) => r.conv_grade),
-          y: rows.map(() => Y_POS[res] ?? 0),
-          type: "scatter",
-          mode: "markers",
-          name: res,
-          marker: {
-            color: COLOR_MAP[res].fill,
-            line: { color: COLOR_MAP[res].border, width: 1.5 },
-            symbol: SYMBOL_MAP[res] || "circle",
-            size: 12,
-          },
-          customdata: rows.map((r) => [r.dept, r.subtype, r.univ, studentLabel(r)]),
-          hovertemplate: "환산등급: %{x}<br>대학: %{customdata[2]}<br>모집단위: %{customdata[0]}<br>세부유형: %{customdata[1]}<br>%{customdata[3]}<extra></extra>",
-          showlegend: false,
-        };
-      });
-
       const allTraces = RESULT_ORDER.map((res) => {
-        const rows = dataArr.filter((r) => r.result === res && r.all_subj_grade !== null);
+        const rows = groupedByResult[res] || [];
+        const x = [];
+        const customdata = [];
+        rows.forEach((r) => {
+          if (r.all_subj_grade === null) return;
+          x.push(r.all_subj_grade);
+          customdata.push([r.dept, r.subtype, r.univ, studentLabel(r)]);
+        });
         return {
-          x: rows.map((r) => r.all_subj_grade),
-          y: rows.map(() => Y_POS[res] ?? 0),
+          x,
+          y: new Array(x.length).fill(Y_POS[res] ?? 0),
           type: "scatter",
           mode: "markers",
           name: res,
           marker: {
             color: COLOR_MAP[res].fill,
-            line: { color: COLOR_MAP[res].border, width: 1.5 },
+            line: { color: COLOR_MAP[res].border, width: 1 },
             symbol: SYMBOL_MAP[res] || "circle",
-            size: 12,
+            size: 10,
+            opacity: 0.85,
           },
-          customdata: rows.map((r) => [r.dept, r.subtype, r.univ, studentLabel(r)]),
+          customdata,
           hovertemplate: "전교과등급: %{x}<br>대학: %{customdata[2]}<br>모집단위: %{customdata[0]}<br>세부유형: %{customdata[1]}<br>%{customdata[3]}<extra></extra>",
           showlegend: false,
         };
       });
 
-      return { convTraces: convTraces, allTraces: allTraces };
+      return { allTraces: allTraces };
     }
 
     function createStatsHtml(stats, plotId, isConv) {
       const items = [];
-      items.push(`<div class="stats-item stats-total">총 ${stats.total_count}명</div>`);
+      items.push(`<div class="stats-item stats-total">총 ${stats.total_count}건</div>`);
       if (stats.all_pass_count !== undefined) {
-        items.push(`<div class="stats-item stats-pass">합격(전체): ${stats.all_pass_count}명 (${stats.all_pass_rate || "0%"}), 범위 ${fmt(stats.all_pass_min)}~${fmt(stats.all_pass_max)}, 평균 ${fmt(stats.all_pass_mean)}</div>`);
+        items.push(`<div class="stats-item stats-pass">합격(전체): ${stats.all_pass_count}건 (${stats.all_pass_rate || "0%"})</div>`);
       }
       if (stats.pass_count !== undefined) {
-        items.push(`<div class="stats-item stats-pass">합격(일반): ${stats.pass_count}명 (${stats.pass_rate})</div>`);
+        items.push(`<div class="stats-item stats-pass">합격(일반): ${stats.pass_count}건 (${stats.pass_rate})</div>`);
       }
       if (stats.waitlist_count !== undefined) {
-        items.push(`<div class="stats-item stats-wait">충원합격: ${stats.waitlist_count}명 (${stats.waitlist_rate})</div>`);
+        items.push(`<div class="stats-item stats-wait">충원합격: ${stats.waitlist_count}건 (${stats.waitlist_rate})</div>`);
       }
       if (stats.fail_count !== undefined) {
         const failRate = stats.total_count ? ((stats.fail_count / stats.total_count) * 100).toFixed(1) + "%" : "0.0%";
-        items.push(`<div class="stats-item stats-fail">불합격: ${stats.fail_count}명 (${failRate})</div>`);
+        items.push(`<div class="stats-item stats-fail">불합격: ${stats.fail_count}건 (${failRate})</div>`);
       }
       return items.join("");
     }
@@ -507,7 +970,7 @@
         if (!d.count) return `<tr><td>${res}</td><td colspan="6">데이터 없음</td></tr>`;
         return `<tr class="${res === "합격" ? "pass-row" : res === "불합격" ? "fail-row" : "waitlist-row"}">
           <td>${res}</td>
-          <td>${d.count}명</td>
+          <td>${d.count}건</td>
           <td>${fmt(d.mean)}</td>
           <td>${fmt(d.std)}</td>
           <td>${fmt(d.min)} ~ ${fmt(d.max)}</td>
@@ -519,21 +982,30 @@
         <div class="card">
           <h3>${title} 상세 통계</h3>
           <table class="stats-table">
-            <thead><tr><th>결과</th><th>인원</th><th>평균</th><th>표준편차</th><th>범위</th><th>중앙값</th><th>1Q-3Q</th></tr></thead>
+            <thead><tr><th>결과</th><th>건수</th><th>평균</th><th>표준편차</th><th>범위</th><th>중앙값</th><th>1Q-3Q</th></tr></thead>
             <tbody>${rows}</tbody>
           </table>
         </div>`;
     }
 
-    function computeStats(dataArr, gradeKey) {
-      const total = dataArr.length;
-      const counts = RESULT_ORDER.reduce((acc, r) => { acc[r] = dataArr.filter((d) => d.result === r).length; return acc; }, {});
-      const passData = dataArr.filter((d) => d.result === "합격" || d.result === "충원합격").map((d) => d[gradeKey]).filter((v) => v !== null);
+    function computeStatsFromGrouped(groupedByResult, gradeKey) {
+      const passRows = groupedByResult["합격"] || [];
+      const waitRows = groupedByResult["충원합격"] || [];
+      const failRows = groupedByResult["불합격"] || [];
+
+      const passData = [];
+      passRows.forEach((d) => { if (d[gradeKey] !== null) passData.push(d[gradeKey]); });
+      waitRows.forEach((d) => { if (d[gradeKey] !== null) passData.push(d[gradeKey]); });
+
+      const passCount = passRows.length;
+      const waitCount = waitRows.length;
+      const failCount = failRows.length;
+      const total = groupedByResult._total ?? (passCount + waitCount + failCount);
       const stats = {
         total_count: total,
-        pass_count: counts["합격"] || 0,
-        waitlist_count: counts["충원합격"] || 0,
-        fail_count: counts["불합격"] || 0,
+        pass_count: passCount,
+        waitlist_count: waitCount,
+        fail_count: failCount,
       };
       stats.all_pass_count = stats.pass_count + stats.waitlist_count;
       stats.pass_rate = total ? ((stats.pass_count / total) * 100).toFixed(1) + "%" : "0.0%";
@@ -547,10 +1019,14 @@
       return stats;
     }
 
-    function computeAdditionalStats(dataArr, key) {
+    function computeAdditionalStatsFromGrouped(groupedByResult, key) {
       const out = {};
       RESULT_ORDER.forEach((res) => {
-        const arr = dataArr.filter((d) => d.result === res).map((d) => d[key]).filter((v) => v !== null);
+        const rows = groupedByResult[res] || [];
+        const arr = [];
+        rows.forEach((d) => {
+          if (d[key] !== null) arr.push(d[key]);
+        });
         if (!arr.length) { out[res] = { count: 0 }; return; }
         out[res] = {
           count: arr.length,
@@ -574,104 +1050,133 @@
 
     function createLayout() {
       return {
-        height: 220,
+        height: 200,
         autosize: true,
-        margin: { t: 12, b: 45, l: 55, r: 25 },
-        xaxis: { range: [0.5, 9.5], tickmode: "array", tickvals: [1,2,3,4,5,6,7,8,9], ticktext: ["1","2","3","4","5","6","7","8","9"], title: "등급" },
-        yaxis: { range: [-0.05, 0.05], tickmode: "array", tickvals: [0.01, 0.0, -0.03], ticktext: ["", "", ""], showgrid: false, zeroline: false },
+        margin: { t: 8, b: 44, l: 24, r: 16 },
+        xaxis: {
+          range: [0.5, 9.5], tickmode: "array",
+          tickvals: [1,2,3,4,5,6,7,8,9],
+          ticktext: ["1","2","3","4","5","6","7","8","9"],
+          title: { text: "등급", font: { size: 11, color: "#9ca3af" } },
+          gridcolor: "#f5f5f5", gridwidth: 1,
+          linecolor: "#e5e7eb", linewidth: 1,
+          tickfont: { size: 11, color: "#6b7280" },
+        },
+        yaxis: {
+          range: [-0.05, 0.05], tickmode: "array",
+          tickvals: [0.01, 0.0, -0.03], ticktext: ["합격", "충원", "불합격"],
+          showgrid: false, zeroline: false,
+          tickfont: { size: 10, color: "#9ca3af" },
+        },
         showlegend: false,
-        plot_bgcolor: "#fff",
+        plot_bgcolor: "#fafafa",
         paper_bgcolor: "#fff",
+        font: { family: "Inter, -apple-system, sans-serif", color: "#6b7280", size: 12 },
+        hoverlabel: { bgcolor: "#fff", bordercolor: "#e5e7eb", font: { family: "Inter, sans-serif", size: 12, color: "#111827" } },
       };
     }
 
-    function initPlots() {
-      document.querySelectorAll(".plot-container[id^='plot-']").forEach((div) => {
-        const id = div.id.split("-")[1];
-        const data = plotsData[id];
-        if (!data) return;
-        const traces = currentGradeType === "conv" ? data.convTraces : data.allTraces;
-        Plotly.newPlot(div, traces, createLayout(), { displayModeBar: false, responsive: true });
-        plotInitialized[id] = true;
-      });
-      // 히스토그램 + 등급대 (전체 요약용)
+    function registerAuxRenderers(records) {
+      auxRenderers = {};
       Object.keys(plotsData).forEach((pid) => {
         if (document.getElementById(`hist-all-${pid}`)) {
-          renderHist(lastRecords, "all_subj_grade", `hist-all-${pid}`, "전교과등급");
+          auxRenderers[`hist-all-${pid}`] = () => renderHist(records, "all_subj_grade", `hist-all-${pid}`, "전교과등급");
         }
         if (document.getElementById(`hist-conv-${pid}`)) {
-          renderHist(lastRecords, "conv_grade", `hist-conv-${pid}`, "환산등급");
+          auxRenderers[`hist-conv-${pid}`] = () => renderHist(records, "conv_grade", `hist-conv-${pid}`, "환산등급");
         }
         if (document.getElementById(`band-bar-${pid}`)) {
-          renderGradeBands(lastRecords, "all_subj_grade", pid);
+          auxRenderers[`band-bar-${pid}`] = () => renderGradeBands(records, "all_subj_grade", pid);
         }
-        if (document.getElementById(`apptype-bar-${pid}`)) {
-          renderApptypeStats(lastRecords, pid);
+        if (document.getElementById(`apptype-table-${pid}`)) {
+          auxRenderers[`apptype-table-${pid}`] = () => renderApptypeStats(records, pid);
         }
       });
-      renderUnivTop(lastRecords);
+      if (document.getElementById("univ-top-chart")) {
+        auxRenderers["univ-top-chart"] = () => renderUnivTop(records);
+      }
     }
 
-    function updateAllPlots() {
+    function renderAuxById(targetId) {
+      const renderer = auxRenderers[targetId];
+      if (!renderer) return;
+      renderer();
+      delete auxRenderers[targetId];
+    }
+
+    function renderPlotIfNeeded(plotId) {
+      if (plotInitialized[plotId]) return;
+      const div = document.getElementById(`plot-${plotId}`);
+      const data = plotsData[plotId];
+      if (!div || !data) return;
+      Plotly.newPlot(div, data.allTraces, createLayout(), { displayModeBar: false, responsive: true });
+      plotInitialized[plotId] = true;
+    }
+
+    function getVisiblePlotIds(buffer = 240) {
+      const visibleIds = [];
       document.querySelectorAll(".plot-container[id^='plot-']").forEach((div) => {
-        const id = div.id.split("-")[1];
+        const rect = div.getBoundingClientRect();
+        if (rect.bottom >= -buffer && rect.top <= window.innerHeight + buffer) {
+          visibleIds.push(div.id.split("-")[1]);
+        }
+      });
+      return visibleIds;
+    }
+
+    function updateVisiblePlots() {
+      const visibleIds = getVisiblePlotIds();
+      visibleIds.forEach((id) => {
         const data = plotsData[id];
-        if (!data || !plotInitialized[id]) return;
-        const traces = currentGradeType === "conv" ? data.convTraces : data.allTraces;
-        Plotly.react(div, traces, createLayout(), { displayModeBar: false, responsive: true });
+        const div = document.getElementById(`plot-${id}`);
+        if (!data || !div) return;
+        if (!plotInitialized[id]) {
+          renderPlotIfNeeded(id);
+          return;
+        }
+        Plotly.react(div, data.allTraces, createLayout(), { displayModeBar: false, responsive: true });
       });
     }
 
-    function bindGradeToggle() {
-      const btnConv = document.getElementById("btn-conv");
-      const btnAll = document.getElementById("btn-all");
-      btnConv.onclick = () => switchGrade("conv");
-      btnAll.onclick = () => switchGrade("all_subj");
-    }
+    function initLazyRendering(records) {
+      registerAuxRenderers(records);
 
-    function switchGrade(type) {
-      if (currentGradeType === type) return;
-      currentGradeType = type;
-      document.getElementById("btn-conv").classList.toggle("active", type === "conv");
-      document.getElementById("btn-all").classList.toggle("active", type === "all_subj");
-      document.getElementById("grade-label").textContent = type === "conv" ? "환산등급" : "전교과100 등급";
+      const plotDivs = document.querySelectorAll(".plot-container[id^='plot-']");
+      if ("IntersectionObserver" in window) {
+        plotObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const plotId = entry.target.id.split("-")[1];
+              renderPlotIfNeeded(plotId);
+            }
+          });
+        }, { root: null, rootMargin: "240px 0px", threshold: 0.01 });
+        plotDivs.forEach((div) => plotObserver.observe(div));
+      } else {
+        plotDivs.forEach((div) => renderPlotIfNeeded(div.id.split("-")[1]));
+      }
 
-      document.querySelectorAll("[id^='conv-stats-']").forEach((el) => el.style.display = type === "conv" ? "flex" : "none");
-      document.querySelectorAll("[id^='all-stats-']").forEach((el) => el.style.display = type === "all_subj" ? "flex" : "none");
-      document.querySelectorAll("[id^='conv-detail-']").forEach((el) => el.style.display = type === "conv" ? "block" : "none");
-      document.querySelectorAll("[id^='all-detail-']").forEach((el) => el.style.display = type === "all_subj" ? "block" : "none");
-      updateAllPlots();
-    }
-
-    function buildTOC() {
-      const toc = document.getElementById("toc-content");
-      let html = "";
-      document.querySelectorAll(".dept-container").forEach((container) => {
-        const header = container.querySelector(".dept-header");
-        if (!header) return;
-        const id = container.id;
-        html += `<div class="toc-university" onclick="scrollToElement('${id}')">${header.textContent}</div>`;
-        const apSummary = container.querySelector("[id^='apptype-summary-']");
-        if (apSummary) html += `<div class="toc-subitems"><div class="toc-subtype-item" onclick="scrollToElement('${apSummary.id}')">전형유형별 요약</div></div>`;
-        const stSummary = container.querySelector("[id^='summary-container-']");
-        if (stSummary) html += `<div class="toc-subitems"><div class="toc-subtype-item" onclick="scrollToElement('${stSummary.id}')">세부유형별 요약</div></div>`;
-        container.querySelectorAll("[id^='dept-container-']").forEach((deptEl) => {
-          const deptHeader = deptEl.querySelector(".subtype-header");
-          if (!deptHeader) return;
-          html += `<div class="toc-subitems"><div class="toc-dept-item" onclick="scrollToElement('${deptEl.id}')">${deptHeader.textContent}</div></div>`;
+      const auxIds = Object.keys(auxRenderers);
+      if ("IntersectionObserver" in window) {
+        auxObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            renderAuxById(entry.target.id);
+            auxObserver.unobserve(entry.target);
+          });
+        }, { root: null, rootMargin: "240px 0px", threshold: 0.01 });
+        auxIds.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) auxObserver.observe(el);
         });
-      });
-      toc.innerHTML = html;
-    }
+      } else {
+        auxIds.forEach((id) => renderAuxById(id));
+      }
 
-    function scrollToElement(id) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const headerHeight = document.querySelector(".fixed-header")?.offsetHeight || 0;
-      const top = el.getBoundingClientRect().top + window.pageYOffset - headerHeight - 10;
-      window.scrollTo({ top, behavior: "smooth" });
+      requestAnimationFrame(() => {
+        updateVisiblePlots();
+      });
     }
-    window.scrollToElement = scrollToElement; // for inline onclick
 
     function makeHistogramSeries(records, key) {
       const passArr = records.filter((r) => r.result === "합격" || r.result === "충원합격").map((r) => r[key]).filter((v) => v !== null);
@@ -733,39 +1238,36 @@
       const hasData = stats.some((s) => s.total > 0);
 
       const barEl = document.getElementById(`band-bar-${targetPlotId}`);
-      const tableEl = document.getElementById(`band-table-${targetPlotId}`);
       if (barEl) {
         if (!hasData) {
           barEl.innerHTML = '<div class="empty">데이터 없음</div>';
         } else {
+          const passRates = stats.map((s) => s.total ? ((s.pass / s.total) * 100).toFixed(0) + "%" : "");
           Plotly.newPlot(barEl, [
-            { x: labels, y: passCounts, type: "bar", name: "합격(충원포함)", marker: { color: COLOR_MAP["합격"].border } },
-            { x: labels, y: failCounts, type: "bar", name: "불합격", marker: { color: COLOR_MAP["불합격"].border } },
+            {
+              x: labels, y: passCounts, type: "bar", name: "합격(충원포함)",
+              marker: { color: "rgba(5, 150, 105, 0.75)", line: { width: 0 } },
+              text: passRates, textposition: "inside", textfont: { color: "#fff", size: 11, family: "Inter, sans-serif" },
+              hovertemplate: "%{x}: %{y}건<extra>합격(충원포함)</extra>",
+            },
+            {
+              x: labels, y: failCounts, type: "bar", name: "불합격",
+              marker: { color: "rgba(220, 38, 38, 0.6)", line: { width: 0 } },
+              hovertemplate: "%{x}: %{y}건<extra>불합격</extra>",
+            },
           ], {
             height: 280,
             barmode: "stack",
-            margin: { t: 20, b: 40, l: 45, r: 20 },
-            yaxis: { title: "인원" },
+            bargap: 0.35,
+            margin: { t: 16, b: 44, l: 48, r: 16 },
+            yaxis: { title: { text: "건수", font: { size: 11, color: "#9ca3af" } }, gridcolor: "#f0f0f0", gridwidth: 1, zeroline: false, tickfont: { size: 11, color: "#9ca3af" } },
+            xaxis: { tickfont: { size: 11, color: "#6b7280" } },
+            legend: { orientation: "h", x: 0.5, xanchor: "center", y: 1.12, font: { size: 11, color: "#6b7280" } },
+            plot_bgcolor: "#fff",
+            paper_bgcolor: "#fff",
+            font: { family: "Inter, -apple-system, sans-serif" },
           }, { displayModeBar: false, responsive: true });
         }
-      }
-      if (tableEl) {
-        const rows = stats.map((s) => {
-          if (!s.total) {
-            return `<tr><td>${s.label}</td><td colspan="4">데이터 없음</td></tr>`;
-          }
-          return `<tr>
-            <td>${s.label}</td>
-            <td>${s.pass}</td>
-            <td>${s.fail}</td>
-            <td>${s.total}</td>
-            <td>${s.passRate.toFixed(1)}%</td>
-          </tr>`;
-        }).join("");
-        tableEl.innerHTML = `<table class="stats-table">
-          <thead><tr><th>등급대</th><th>합격</th><th>불합격</th><th>총원</th><th>합격률</th></tr></thead>
-          <tbody>${rows}</tbody>
-        </table>`;
       }
     }
 
@@ -781,66 +1283,52 @@
       });
       return Object.entries(groups).map(([apptype, g]) => {
         const total = g.total || 1;
+        const allPass = g.pass + g.wait;
         return {
           apptype,
           total: g.total,
           pass: g.pass,
           wait: g.wait,
           fail: g.fail,
+          allPass,
+          allPassRate: (allPass / total) * 100,
           passRate: (g.pass / total) * 100,
           waitRate: (g.wait / total) * 100,
           failRate: (g.fail / total) * 100,
         };
-      }).sort((a, b) => b.total - a.total);
+      }).sort((a, b) => (b.total - a.total) || a.apptype.localeCompare(b.apptype, "ko"));
     }
 
     function renderApptypeStats(records, plotId) {
       const stats = makeApptypeStats(records);
-      const labels = stats.map((s) => s.apptype);
-      const passCounts = stats.map((s) => s.pass);
-      const waitCounts = stats.map((s) => s.wait);
-      const failCounts = stats.map((s) => s.fail);
       const hasData = stats.some((s) => s.total > 0);
+      const clampPct = (v) => Math.max(0, Math.min(100, v));
+      const rateColor = (pct) => {
+        if (pct >= 70) return "#059669";
+        if (pct >= 50) return "#10b981";
+        if (pct >= 30) return "#d97706";
+        return "#dc2626";
+      };
 
-      const barEl = document.getElementById(`apptype-bar-${plotId}`);
-      const tableEl = document.getElementById(`apptype-table-${plotId}`);
-
-      if (barEl) {
-        if (!hasData) {
-          barEl.innerHTML = '<div class="empty">데이터 없음</div>';
-        } else {
-          Plotly.newPlot(barEl, [
-            { y: labels, x: passCounts, type: "bar", name: "합격", orientation: "h", marker: { color: COLOR_MAP["합격"].border } },
-            { y: labels, x: waitCounts, type: "bar", name: "충원합격", orientation: "h", marker: { color: COLOR_MAP["충원합격"].border } },
-            { y: labels, x: failCounts, type: "bar", name: "불합격", orientation: "h", marker: { color: COLOR_MAP["불합격"].border } },
-          ], {
-            height: Math.max(240, 26 * labels.length + 80),
-            barmode: "stack",
-            margin: { t: 20, b: 40, l: 120, r: 20 },
-            xaxis: { title: "인원" },
-          }, { displayModeBar: false, responsive: true });
-        }
+      const cardEl = document.getElementById(`apptype-table-${plotId}`);
+      if (!cardEl) return;
+      if (!hasData) {
+        cardEl.innerHTML = '<div class="empty">데이터 없음</div>';
+        return;
       }
-      if (tableEl) {
-        const rows = stats.map((s) => {
-          if (!s.total) return `<tr><td>${s.apptype}</td><td colspan="6">데이터 없음</td></tr>`;
-          return `<tr>
-            <td>${s.apptype}</td>
-            <td>${s.total}</td>
-            <td>${s.pass}</td>
-            <td>${s.wait}</td>
-            <td>${s.fail}</td>
-            <td>${s.passRate.toFixed(1)}%</td>
-            <td>${s.waitRate.toFixed(1)}%</td>
-            <td>${s.failRate.toFixed(1)}%</td>
-          </tr>`;
-        }).join("");
-        tableEl.innerHTML = `<table class="stats-table">
-          <thead><tr><th>전형유형</th><th>총원</th><th>합격</th><th>충원합격</th><th>불합격</th><th>합격률</th><th>충원률</th><th>불합격률</th></tr></thead>
-          <tbody>${rows}</tbody>
-        </table>`;
-      }
-
+      const cards = stats.map((s) => {
+        const pct = clampPct(s.allPassRate);
+        return `<article class="apptype-chip">
+          <h4 class="apptype-chip-title">${s.apptype}</h4>
+          <div class="apptype-chip-count">${s.total.toLocaleString()}건</div>
+          <div class="apptype-chip-rate-row">
+            <span class="apptype-chip-rate-label">합격률(충원포함)</span>
+            <span class="apptype-chip-rate-value">${pct.toFixed(1)}%</span>
+          </div>
+          <div class="apptype-chip-bar"><span style="width:${pct.toFixed(1)}%; background:${rateColor(pct)};"></span></div>
+        </article>`;
+      }).join("");
+      cardEl.innerHTML = `<div class="apptype-chip-grid">${cards}</div>`;
     }
 
     function renderUnivTop(records) {
@@ -870,14 +1358,26 @@
         const dynamicHeight = Math.max(360, 26 * labelsTop.length + 110);
         univTopEl.style.height = dynamicHeight + "px";
         Plotly.newPlot(univTopEl, [
-          { y: labelsTop, x: passTop, type: "bar", name: "합격", orientation: "h", marker: { color: COLOR_MAP["합격"].border } },
-          { y: labelsTop, x: waitTop, type: "bar", name: "충원합격", orientation: "h", marker: { color: COLOR_MAP["충원합격"].border } },
-          { y: labelsTop, x: failTop, type: "bar", name: "불합격", orientation: "h", marker: { color: COLOR_MAP["불합격"].border } },
+          { y: labelsTop, x: passTop, type: "bar", name: "합격", orientation: "h",
+            marker: { color: "rgba(5, 150, 105, 0.75)", line: { width: 0 } },
+            hovertemplate: "%{y}: %{x}건<extra>합격</extra>" },
+          { y: labelsTop, x: waitTop, type: "bar", name: "충원합격", orientation: "h",
+            marker: { color: "rgba(217, 119, 6, 0.65)", line: { width: 0 } },
+            hovertemplate: "%{y}: %{x}건<extra>충원합격</extra>" },
+          { y: labelsTop, x: failTop, type: "bar", name: "불합격", orientation: "h",
+            marker: { color: "rgba(220, 38, 38, 0.55)", line: { width: 0 } },
+            hovertemplate: "%{y}: %{x}건<extra>불합격</extra>" },
         ], {
-          height: dynamicHeight,
-          barmode: "stack",
-          margin: { t: 24, b: 40, l: 150, r: 24 },
-          xaxis: { title: "인원" },
+            height: dynamicHeight,
+            barmode: "stack",
+            bargap: 0.3,
+            margin: { t: 36, b: 40, l: 150, r: 24 },
+            xaxis: { title: { text: "건수", font: { size: 11, color: "#9ca3af" } }, gridcolor: "#f0f0f0", gridwidth: 1, zeroline: false, tickfont: { size: 11, color: "#9ca3af" } },
+            yaxis: { tickfont: { size: 12, color: "#374151" }, autorange: "reversed" },
+            legend: { orientation: "h", x: 0.5, xanchor: "center", y: 1.05, font: { size: 11, color: "#6b7280" } },
+            plot_bgcolor: "#fff",
+            paper_bgcolor: "#fff",
+            font: { family: "Inter, -apple-system, sans-serif" },
         }, { displayModeBar: false, responsive: true });
       }
     }
@@ -895,29 +1395,38 @@
           y: passCounts,
           type: "bar",
           name: "합격(충원포함)",
-          marker: { color: COLOR_MAP["합격"].border },
-          width: BINS.size * 0.9,
+          marker: { color: "rgba(5, 150, 105, 0.7)", line: { width: 0 } },
+          width: BINS.size * 0.85,
+          hovertemplate: "등급 %{x}: %{y}건<extra>합격(충원포함)</extra>",
         },
         {
           x: center,
           y: failCounts.map((v) => -v),
           type: "bar",
           name: "불합격",
-          marker: { color: COLOR_MAP["불합격"].border },
-          width: BINS.size * 0.9,
+          marker: { color: "rgba(220, 38, 38, 0.55)", line: { width: 0 } },
+          width: BINS.size * 0.85,
+          hovertemplate: "등급 %{x}: %{customdata}건<extra>불합격</extra>",
+          customdata: failCounts,
         },
       ];
       Plotly.newPlot(el, traces, {
         height: 260,
         barmode: "relative",
-        bargap: 0.02,
-        margin: { t: 20, b: 45, l: 50, r: 20 },
-        xaxis: { title: "등급", range: [BINS.start, BINS.end] },
+        bargap: 0.08,
+        margin: { t: 16, b: 44, l: 50, r: 16 },
+        xaxis: { title: { text: "등급", font: { size: 11, color: "#9ca3af" } }, range: [BINS.start, BINS.end], tickfont: { size: 11, color: "#6b7280" }, gridcolor: "#f5f5f5" },
         yaxis: {
-          title: "인원(+합격 / -불합격)",
-          zeroline: true,
-          range: [-maxVal * 1.2, maxVal * 1.2],
+          title: { text: "건수(+합격 / -불합격)", font: { size: 10, color: "#9ca3af" } },
+          zeroline: true, zerolinecolor: "#e5e7eb", zerolinewidth: 1,
+          gridcolor: "#f0f0f0", gridwidth: 1,
+          range: [-maxVal * 1.25, maxVal * 1.25],
+          tickfont: { size: 11, color: "#9ca3af" },
         },
+        legend: { orientation: "h", x: 0.5, xanchor: "center", y: 1.1, font: { size: 11, color: "#6b7280" } },
+        plot_bgcolor: "#fff",
+        paper_bgcolor: "#fff",
+        font: { family: "Inter, -apple-system, sans-serif" },
       }, { displayModeBar: false, responsive: true });
     }
 
