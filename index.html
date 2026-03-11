@@ -36,6 +36,7 @@
       --radius: 8px;
       --radius-lg: 12px;
       --radius-xl: 16px;
+      --report-tabs-top: 84px;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; }
     body {
@@ -64,6 +65,13 @@
       color: var(--text-secondary);
       font-size: 14px;
       font-weight: 400;
+    }
+    .hero-build-info {
+      margin-top: 8px;
+      color: var(--text-tertiary);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
     }
     .site-footer {
       margin: 40px auto 32px;
@@ -197,17 +205,45 @@
       color: var(--text-primary);
       letter-spacing: -0.025em;
     }
+    .header-build-info {
+      text-align: center;
+      color: var(--text-tertiary);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+    }
     .main-content { min-width: 0; }
 
     /* Tabs */
+    .tab-bar-sticky {
+      position: sticky;
+      top: var(--report-tabs-top);
+      z-index: 45;
+      margin: 0 0 16px;
+      padding: 12px 0 16px;
+      isolation: isolate;
+    }
+    .tab-bar-sticky::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(249, 250, 251, 0.94) 0%, rgba(249, 250, 251, 0.90) 46%, rgba(249, 250, 251, 0.68) 78%, rgba(249, 250, 251, 0) 100%);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.96) 38%, rgba(0, 0, 0, 0.62) 74%, rgba(0, 0, 0, 0) 100%);
+      -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.96) 38%, rgba(0, 0, 0, 0.62) 74%, rgba(0, 0, 0, 0) 100%);
+    }
     .tab-bar {
       display: flex;
       gap: 4px;
-      margin: 16px 0 24px;
+      margin: 0;
       background: var(--surface-alt);
       border-radius: var(--radius);
       padding: 4px;
       width: fit-content;
+      position: relative;
+      z-index: 1;
     }
     .tab-btn {
       background: transparent;
@@ -794,9 +830,11 @@
     .detail-table col.detail-col-result { width: 92px; }
     .detail-table col.detail-col-register { width: 64px; }
     .detail-table col.detail-col-grade { width: 94px; }
+    .detail-table col.detail-col-grade5 { width: 102px; }
     .detail-col-class,
     .detail-col-register,
-    .detail-col-grade {
+    .detail-col-grade,
+    .detail-col-grade5 {
       text-align: center;
     }
     .detail-cell-text,
@@ -1112,6 +1150,10 @@
       .apptype-chip-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
       .apptype-chip-count { font-size: 22px; }
       .apptype-chip-rate-value { font-size: 16px; }
+      .tab-bar-sticky {
+        margin-bottom: 12px;
+        padding: 10px 0 14px;
+      }
       .tab-bar { overflow-x: auto; white-space: nowrap; padding-bottom: 2px; width: auto; }
       .univ-picker select { min-width: 100%; }
       .dept-container { padding: 16px; border-radius: var(--radius-lg); }
@@ -1158,6 +1200,7 @@
   <header id="landing-hero" class="hero">
     <h1>단위학교 수시 입시 결과 분석 프로그램</h1>
     <p>- 2026 강원진학센터 입시분석팀 -</p>
+    <div id="hero-build-info" class="hero-build-info"></div>
   </header>
 
   <section id="upload-panel" class="panel">
@@ -1224,6 +1267,40 @@
     const DEFAULT_UNIV_DIRECTORY_SORT = "total";
     const DEPT_SEARCH_RESULT_LIMIT = 30;
     const STUDENT_TREND_MAX_APPS = 6;
+    const BUSAN_TOP_NINE_GRADE_RANGE = {
+      grade5: 1.0,
+      minGrade9: 1.15,
+      maxGrade9: 1.45,
+    };
+    const BUSAN_GRADE_5_TO_9_TABLE = [
+      { grade5: 1.08, grade9: 1.59 },
+      { grade5: 1.16, grade9: 1.78 },
+      { grade5: 1.24, grade9: 1.98 },
+      { grade5: 1.33, grade9: 2.14 },
+      { grade5: 1.42, grade9: 2.32 },
+      { grade5: 1.50, grade9: 2.45 },
+      { grade5: 1.66, grade9: 2.72 },
+      { grade5: 1.83, grade9: 3.03 },
+      { grade5: 2.00, grade9: 3.35 },
+      { grade5: 2.16, grade9: 3.60 },
+      { grade5: 2.33, grade9: 3.91 },
+      { grade5: 2.50, grade9: 4.20 },
+      { grade5: 2.66, grade9: 4.46 },
+      { grade5: 2.83, grade9: 4.73 },
+      { grade5: 3.00, grade9: 5.03 },
+      { grade5: 3.16, grade9: 5.28 },
+      { grade5: 3.33, grade9: 5.58 },
+      { grade5: 3.50, grade9: 5.86 },
+      { grade5: 3.66, grade9: 6.08 },
+      { grade5: 3.83, grade9: 6.37 },
+      { grade5: 4.00, grade9: 6.67 },
+      { grade5: 4.16, grade9: 6.93 },
+      { grade5: 4.33, grade9: 7.20 },
+      { grade5: 4.50, grade9: 7.48 },
+      { grade5: 4.66, grade9: 7.71 },
+      { grade5: 4.83, grade9: 8.00 },
+      { grade5: 5.00, grade9: 9.00 },
+    ];
     const GRADE_BAND_COLORS = {
       separate: {
         pass: { strong: "rgba(5, 150, 105, 0.82)", weak: "rgba(5, 150, 105, 0.36)" },
@@ -1241,6 +1318,7 @@
     const reportEl = document.getElementById("report");
     const generateBtn = document.getElementById("generate-btn");
     const landingHeroEl = document.getElementById("landing-hero");
+    const heroBuildInfoEl = document.getElementById("hero-build-info");
     const uploadPanelEl = document.getElementById("upload-panel");
     const detailModalEl = document.getElementById("detail-modal");
     const detailModalTitleEl = document.getElementById("detail-modal-title");
@@ -1285,10 +1363,50 @@
         closeDetailModal();
       }
     });
+    window.addEventListener("resize", updateStickyTabOffset);
 
     function setStatus(msg, isError = false) {
       statusEl.textContent = msg;
       statusEl.style.color = isError ? "#dc2626" : "#6b7280";
+    }
+
+    function getBuildTimestampSource() {
+      if (typeof window.APP_BUILD_UTC === "string" && window.APP_BUILD_UTC.trim()) {
+        return window.APP_BUILD_UTC;
+      }
+      if (typeof document.lastModified === "string" && document.lastModified.trim()) {
+        return document.lastModified;
+      }
+      return "";
+    }
+
+    function formatBuildTimestamp(value) {
+      if (!value) return "";
+      const parsed = new Date(value);
+      if (!Number.isFinite(parsed.getTime())) return "";
+      return new Intl.DateTimeFormat("ko-KR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      }).format(parsed);
+    }
+
+    function updateBuildInfoText() {
+      const formatted = formatBuildTimestamp(getBuildTimestampSource());
+      const message = formatted ? `프로그램 마지막 업데이트: ${formatted}` : "";
+      if (heroBuildInfoEl) {
+        heroBuildInfoEl.textContent = message;
+        heroBuildInfoEl.hidden = !message;
+      }
+      const headerBuildInfoEl = document.getElementById("header-build-info");
+      if (headerBuildInfoEl) {
+        headerBuildInfoEl.textContent = message;
+        headerBuildInfoEl.hidden = !message;
+      }
     }
 
     function setLandingVisibility(isVisible) {
@@ -1887,6 +2005,12 @@ body.protected-export-locked {
       return mapObj.get(key);
     }
 
+    function updateStickyTabOffset() {
+      const fixedHeader = reportEl.querySelector(".fixed-header");
+      const nextOffset = fixedHeader ? Math.ceil(fixedHeader.getBoundingClientRect().height) : 84;
+      document.documentElement.style.setProperty("--report-tabs-top", `${nextOffset}px`);
+    }
+
     function resetLazyObservers() {
       if (plotObserver) {
         plotObserver.disconnect();
@@ -1968,17 +2092,20 @@ body.protected-export-locked {
               </div>
             </div>
           <h2 class="university-title">단위학교 수시 입시 결과 분석 프로그램</h2>
+          <div id="header-build-info" class="header-build-info"></div>
           </div>
         </div>`;
 
       const layout = `
         <div class="layout">
           <main class="main-content">
-            <div class="tab-bar" id="report-tabs">
-              <button type="button" class="tab-btn ${activeTab === "summary" ? "active" : ""}" data-tab="summary">전체데이터요약</button>
-              <button type="button" class="tab-btn ${activeTab === "univ" ? "active" : ""}" data-tab="univ">대학별조회</button>
-              <button type="button" class="tab-btn ${activeTab === "dept" ? "active" : ""}" data-tab="dept">학과별조회</button>
-              <button type="button" class="tab-btn ${activeTab === "trend" ? "active" : ""}" data-tab="trend">지원경향조회</button>
+            <div class="tab-bar-sticky">
+              <div class="tab-bar" id="report-tabs">
+                <button type="button" class="tab-btn ${activeTab === "summary" ? "active" : ""}" data-tab="summary">전체데이터요약</button>
+                <button type="button" class="tab-btn ${activeTab === "univ" ? "active" : ""}" data-tab="univ">대학별조회</button>
+                <button type="button" class="tab-btn ${activeTab === "dept" ? "active" : ""}" data-tab="dept">학과별조회</button>
+                <button type="button" class="tab-btn ${activeTab === "trend" ? "active" : ""}" data-tab="trend">지원경향조회</button>
+              </div>
             </div>
             <section id="tab-summary" class="tab-panel ${activeTab === "summary" ? "active" : ""}"></section>
             <section id="tab-univ" class="tab-panel ${activeTab === "univ" ? "active" : ""}"></section>
@@ -2108,6 +2235,8 @@ body.protected-export-locked {
         btn.addEventListener("click", () => setActiveTab(btn.dataset.tab));
       });
 
+      updateBuildInfoText();
+      updateStickyTabOffset();
       bindSharedExportButton();
       bindGradeBandModeToggles(records);
       bindApptypeBandModeToggles(records);
@@ -2128,6 +2257,7 @@ body.protected-export-locked {
       document.querySelectorAll(".tab-panel").forEach((panel) => {
         panel.classList.toggle("active", panel.id === `tab-${tabName}`);
       });
+      updateStickyTabOffset();
       requestAnimationFrame(() => {
         updateVisiblePlots();
       });
@@ -3406,6 +3536,48 @@ body.protected-export-locked {
       return v === null || v === undefined || Number.isNaN(v) ? "-" : Number(v).toFixed(2);
     }
 
+    function estimateFiveGradeFromNineGradeAverage(gradeAverage9) {
+      if (gradeAverage9 === null || gradeAverage9 === undefined || Number.isNaN(gradeAverage9)) {
+        return null;
+      }
+      const topRange = BUSAN_TOP_NINE_GRADE_RANGE;
+      const table = BUSAN_GRADE_5_TO_9_TABLE;
+      if (!table.length) return null;
+
+      if (gradeAverage9 <= topRange.maxGrade9) {
+        return topRange.grade5;
+      }
+
+      if (gradeAverage9 < table[0].grade9) {
+        const ratio = (gradeAverage9 - topRange.maxGrade9) / (table[0].grade9 - topRange.maxGrade9);
+        return topRange.grade5 + ((table[0].grade5 - topRange.grade5) * ratio);
+      }
+
+      const lastPoint = table[table.length - 1];
+      if (gradeAverage9 >= lastPoint.grade9) {
+        return lastPoint.grade5;
+      }
+
+      for (let index = 1; index < table.length; index += 1) {
+        const prev = table[index - 1];
+        const next = table[index];
+        if (gradeAverage9 === next.grade9) {
+          return next.grade5;
+        }
+        if (gradeAverage9 < next.grade9) {
+          const ratio = (gradeAverage9 - prev.grade9) / (next.grade9 - prev.grade9);
+          return prev.grade5 + ((next.grade5 - prev.grade5) * ratio);
+        }
+      }
+
+      return lastPoint.grade5;
+    }
+
+    function formatEstimatedFiveGrade(v) {
+      const estimated = estimateFiveGradeFromNineGradeAverage(v);
+      return estimated === null ? "-" : Number(estimated).toFixed(2);
+    }
+
     function formatRegistrationDisplay(v) {
       return v === "Y" || v === "N" ? v : "-";
     }
@@ -3549,6 +3721,7 @@ body.protected-export-locked {
         { header: "결과", colClass: "detail-col-result", render: (r) => formatResultBadge(r.result) },
         { header: "등록", colClass: "detail-col-register", value: (r) => formatRegistrationDisplay(r.registered_yn) },
         { header: "전교과등급", colClass: "detail-col-grade", value: (r) => formatModalGrade(r.all_subj_grade) },
+        { header: "5등급(추정)", colClass: "detail-col-grade5", value: (r) => formatEstimatedFiveGrade(r.all_subj_grade) },
       );
       return columns;
     }
@@ -3747,6 +3920,7 @@ body.protected-export-locked {
         row["결과"] = r.result || "";
         row["등록"] = formatRegistrationDisplay(r.registered_yn);
         row["전교과등급"] = r.all_subj_grade === null || r.all_subj_grade === undefined || Number.isNaN(r.all_subj_grade) ? "" : Number(r.all_subj_grade).toFixed(2);
+        row["5등급(추정)"] = formatEstimatedFiveGrade(r.all_subj_grade) === "-" ? "" : formatEstimatedFiveGrade(r.all_subj_grade);
         return row;
       });
     }
@@ -4083,6 +4257,7 @@ body.protected-export-locked {
     }
 
     window.initializePreloadedReport = initializePreloadedReport;
+    updateBuildInfoText();
     initializePreloadedReport();
 
   </script>
