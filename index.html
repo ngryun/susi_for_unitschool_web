@@ -369,6 +369,15 @@
       text-align: right;
       font-variant-numeric: tabular-nums;
     }
+    .summary-table .summary-cell-band {
+      line-height: 1.35;
+    }
+    .summary-table .summary-cell-subnote {
+      display: inline-block;
+      margin-top: 2px;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
     .summary-table .summary-cell-ellipsis {
       display: block;
       overflow: hidden;
@@ -1312,6 +1321,10 @@
         fail: { strong: "rgba(220, 38, 38, 0.58)", weak: "rgba(220, 38, 38, 0.28)" },
       },
     };
+    const UNIV_PASS_BAND_LABEL = "합격자 중앙 50%";
+    const UNIV_PASS_BAND_DESCRIPTION = "합격·충원합격 학생의 전교과등급 가운데 50% 범위";
+    const UNIV_PASS_BAND_SMALL_SAMPLE_TEXT = "표본 적음";
+    const UNIV_PASS_BAND_SMALL_SAMPLE_THRESHOLD = 4;
 
     const fileInput = document.getElementById("file-input");
     const statusEl = document.getElementById("status");
@@ -2144,7 +2157,7 @@ body.protected-export-locked {
             <div class="card-head">
               <div class="card-head-copy">
                 <h3>합격/충원/불합격 결과 비교</h3>
-                <div class="card-note" id="univ-top-note">상위 20개 대학은 지원 건수 기준으로 선정했습니다. 막대는 결과 비율, 우측 숫자 열은 총건수와 합격권(Q1~Q3)입니다.<span class="card-note-emphasis">막대그래프나 대학명을 클릭하면 해당 대학의 지원 데이터를 조회할 수 있습니다.</span></div>
+                <div class="card-note" id="univ-top-note">${buildUnivTopNoteHtml("결과 비율")}</div>
               </div>
               <div class="control-stack">
                 <div class="control-group">
@@ -2173,7 +2186,7 @@ body.protected-export-locked {
             <div class="card-head">
               <div class="card-head-copy">
                 <h3>대학별 요약 목록</h3>
-                <div class="card-note">합격건과 합격률은 충원합격을 포함합니다.<span class="card-note-emphasis">대학명을 클릭하면 해당 대학의 상세 데이터를 조회할 수 있습니다.</span></div>
+                <div class="card-note">${buildUnivDirectoryNoteHtml()}</div>
               </div>
               <div class="control-group">
                 <div class="control-group-label">정렬 기준</div>
@@ -2583,6 +2596,51 @@ body.protected-export-locked {
     function percentile(arr, p) { if (!arr.length) return 0; const s = [...arr].sort((a, b) => a - b); const rank = (p / 100) * (s.length - 1); const l = Math.floor(rank); const h = Math.ceil(rank); if (l === h) return s[l]; const w = rank - l; return s[l] * (1 - w) + s[h] * w; }
     function fmt(v) { return v === undefined || v === null || Number.isNaN(v) ? "-" : Number(v).toFixed(2); }
     function fmtRange(a, b) { if ([a, b].some((x) => x === undefined || x === null || Number.isNaN(x))) return "-"; return `${Number(a).toFixed(2)} ~ ${Number(b).toFixed(2)}`; }
+    function isUnivPassBandSmallSample(sampleCount) { return sampleCount > 0 && sampleCount < UNIV_PASS_BAND_SMALL_SAMPLE_THRESHOLD; }
+    function formatUnivPassBandLabel(q1, q3, sampleCount) {
+      const rangeLabel = fmtRange(q1, q3);
+      if (rangeLabel === "-") return "-";
+      return isUnivPassBandSmallSample(sampleCount) ? `${rangeLabel} (${UNIV_PASS_BAND_SMALL_SAMPLE_TEXT})` : rangeLabel;
+    }
+    function buildUnivPassBandMeta(passGrades = []) {
+      const sampleCount = passGrades.length;
+      const q1 = sampleCount ? percentile(passGrades, 25) : null;
+      const q3 = sampleCount ? percentile(passGrades, 75) : null;
+      return {
+        q1,
+        q3,
+        sampleCount,
+        label: formatUnivPassBandLabel(q1, q3, sampleCount),
+      };
+    }
+    function buildUnivPassBandMetaFromRecords(records = []) {
+      const passGrades = [];
+      records.forEach((record) => {
+        if ((record.result === "합격" || record.result === "충원합격") && record.all_subj_grade !== null) {
+          passGrades.push(record.all_subj_grade);
+        }
+      });
+      return buildUnivPassBandMeta(passGrades);
+    }
+    function formatUnivPassBandSampleText(sampleCount) {
+      return sampleCount ? `합격·충원 표본 ${sampleCount}건` : "합격·충원 표본 없음";
+    }
+    function formatUnivPassBandTableCellHtml(label) {
+      const smallSampleSuffix = ` (${UNIV_PASS_BAND_SMALL_SAMPLE_TEXT})`;
+      const safeLabel = String(label || "-");
+      if (!safeLabel.endsWith(smallSampleSuffix)) return escapeHtml(safeLabel);
+      const rangeLabel = safeLabel.slice(0, -smallSampleSuffix.length);
+      return `${escapeHtml(rangeLabel)}<br><span class="summary-cell-subnote">(${UNIV_PASS_BAND_SMALL_SAMPLE_TEXT})</span>`;
+    }
+    function buildUnivPassBandDetailSubtitle(passBandMeta) {
+      return `${UNIV_PASS_BAND_LABEL} ${passBandMeta.label} · ${formatUnivPassBandSampleText(passBandMeta.sampleCount)} · ${UNIV_PASS_BAND_DESCRIPTION}`;
+    }
+    function buildUnivTopNoteHtml(modeText) {
+      return `상위 20개 대학은 지원 건수 기준으로 선정했습니다. 막대는 ${modeText}, 우측 숫자 열은 총건수와 ${UNIV_PASS_BAND_LABEL}입니다. ${UNIV_PASS_BAND_LABEL}는 ${UNIV_PASS_BAND_DESCRIPTION}이며, 합격·충원 표본 ${UNIV_PASS_BAND_SMALL_SAMPLE_THRESHOLD}건 미만 정보는 hover와 상세 화면에서 안내합니다.<span class="card-note-emphasis">막대그래프나 대학명을 클릭하면 해당 대학의 지원 데이터를 조회할 수 있습니다.</span>`;
+    }
+    function buildUnivDirectoryNoteHtml() {
+      return `합격건과 합격률은 충원합격을 포함합니다. ${UNIV_PASS_BAND_LABEL}는 ${UNIV_PASS_BAND_DESCRIPTION}이며, 합격·충원 표본 ${UNIV_PASS_BAND_SMALL_SAMPLE_THRESHOLD}건 미만은 ${UNIV_PASS_BAND_SMALL_SAMPLE_TEXT}으로 표시합니다.<span class="card-note-emphasis">대학명을 클릭하면 해당 대학의 상세 데이터를 조회할 수 있습니다.</span>`;
+    }
 
     function createLayout() {
       return {
@@ -3016,7 +3074,7 @@ body.protected-export-locked {
       const noteEl = document.getElementById("univ-top-note");
       if (!noteEl) return;
       const modeText = getUnivTopMode() === "ratio" ? "결과 비율" : "절대 건수";
-      noteEl.innerHTML = `상위 20개 대학은 지원 건수 기준으로 선정했습니다. 막대는 ${modeText}, 우측 숫자 열은 총건수와 합격권(Q1~Q3)입니다.<span class="card-note-emphasis">막대그래프나 대학명을 클릭하면 해당 대학의 지원 데이터를 조회할 수 있습니다.</span>`;
+      noteEl.innerHTML = buildUnivTopNoteHtml(modeText);
     }
 
     function bindUnivTopModeToggle(records) {
@@ -3101,15 +3159,15 @@ body.protected-export-locked {
         .map(([univ, item]) => {
           const allPass = item.pass + item.wait;
           const regionLabel = item.regions.size ? Array.from(item.regions).sort().join(" / ") : "-";
-          const q1 = item.passGrades.length ? percentile(item.passGrades, 25) : null;
-          const q3 = item.passGrades.length ? percentile(item.passGrades, 75) : null;
+          const passBandMeta = buildUnivPassBandMeta(item.passGrades);
           return {
             region: regionLabel,
             univ,
             total: item.total,
             allPass,
             allPassRate: item.total ? (allPass / item.total) * 100 : 0,
-            passBandLabel: fmtRange(q1, q3),
+            passSampleCount: passBandMeta.sampleCount,
+            passBandLabel: passBandMeta.label,
           };
         })
         .sort((a, b) => {
@@ -3151,7 +3209,7 @@ body.protected-export-locked {
               <th class="summary-cell-number">지원건수</th>
               <th class="summary-cell-number">합격건</th>
               <th class="summary-cell-number">합격률</th>
-              <th class="summary-cell-number">합격권(Q1~Q3)</th>
+              <th class="summary-cell-number">${UNIV_PASS_BAND_LABEL}</th>
             </tr>
           </thead>
           <tbody>
@@ -3161,7 +3219,7 @@ body.protected-export-locked {
               <td class="summary-cell-number">${item.total.toLocaleString()}건</td>
               <td class="summary-cell-number">${item.allPass.toLocaleString()}건</td>
               <td class="summary-cell-number">${item.allPassRate.toFixed(1)}%</td>
-              <td class="summary-cell-number">${escapeHtml(item.passBandLabel)}</td>
+              <td class="summary-cell-number summary-cell-band">${formatUnivPassBandTableCellHtml(item.passBandLabel)}</td>
             </tr>`).join("")}
           </tbody>
         </table>
@@ -3823,9 +3881,10 @@ body.protected-export-locked {
     function getDetailViewConfig(view, detailRows) {
       const totalText = `총 ${detailRows.length.toLocaleString()}건`;
       if (view.type === "univ") {
+        const passBandMeta = buildUnivPassBandMetaFromRecords(detailRows);
         return {
           title: `${view.univ} 상세 데이터`,
-          subtitle: totalText,
+          subtitle: `${totalText} · ${buildUnivPassBandDetailSubtitle(passBandMeta)}`,
           tableOptions: { enableStudentLinks: true },
           exportOptions: {
             includeUniv: false,
@@ -4070,10 +4129,17 @@ body.protected-export-locked {
           const total = g.total || 0;
           const firstPassRate = total ? (g.pass / total) * 100 : 0;
           const allPassRate = total ? ((g.pass + g.wait) / total) * 100 : 0;
-          const q1 = g.passGrades.length ? percentile(g.passGrades, 25) : null;
-          const q3 = g.passGrades.length ? percentile(g.passGrades, 75) : null;
-          const passBandLabel = g.passGrades.length ? fmtRange(q1, q3) : "-";
-          return { univ, ...g, firstPassRate, allPassRate, q1, q3, passBandLabel };
+          const passBandMeta = buildUnivPassBandMeta(g.passGrades);
+          return {
+            univ,
+            ...g,
+            firstPassRate,
+            allPassRate,
+            q1: passBandMeta.q1,
+            q3: passBandMeta.q3,
+            passSampleCount: passBandMeta.sampleCount,
+            passBandLabel: passBandMeta.label,
+          };
         })
         .filter((x) => x.total > 0)
         .sort((a, b) => b.total - a.total)
@@ -4102,7 +4168,7 @@ body.protected-export-locked {
         const countData = { pass: passTop, wait: waitTop, fail: failTop };
         const xTitle = mode === "ratio" ? "비율" : "건수";
         const xSuffix = mode === "ratio" ? "%" : "건";
-        const summaryX = { total: 1.01, band: 1.11 };
+        const summaryX = { total: 1.01, band: 1.12 };
         const headerAnnotations = [
           {
             xref: "paper",
@@ -4120,7 +4186,7 @@ body.protected-export-locked {
             x: summaryX.band,
             yref: "paper",
             y: 1.06,
-            text: "<b>합격권</b>",
+            text: "<b>합격 중앙 50%</b>",
             showarrow: false,
             xanchor: "left",
             align: "left",
@@ -4144,7 +4210,7 @@ body.protected-export-locked {
             x: summaryX.band,
             yref: "y",
             y: s.univ,
-            text: s.passBandLabel,
+            text: fmtRange(s.q1, s.q3),
             showarrow: false,
             xanchor: "left",
             align: "left",
@@ -4152,25 +4218,30 @@ body.protected-export-locked {
           },
         ]));
         const annotations = [...headerAnnotations, ...rowAnnotations];
-        const buildHoverTemplate = (label) => `<b>%{y}</b><br>${label}: %{customdata}건<extra></extra>`;
+        const buildHoverCustomData = (counts) => counts.map((count, index) => ([
+          count,
+          sorted[index].passBandLabel,
+          formatUnivPassBandSampleText(sorted[index].passSampleCount),
+        ]));
+        const buildHoverTemplate = (label) => `<b>%{y}</b><br>${label}: %{customdata[0]}건<br>${UNIV_PASS_BAND_LABEL}: %{customdata[1]}<br>%{customdata[2]}<extra></extra>`;
         Plotly.newPlot(univTopEl, [
           { y: labelsTop, x: xData.pass, type: "bar", name: "합격", orientation: "h",
             marker: { color: "rgba(5, 150, 105, 0.78)", line: { width: 0 } },
-            customdata: countData.pass,
+            customdata: buildHoverCustomData(countData.pass),
             hovertemplate: buildHoverTemplate("합격") },
           { y: labelsTop, x: xData.wait, type: "bar", name: "충원합격", orientation: "h",
             marker: { color: "rgba(217, 119, 6, 0.68)", line: { width: 0 } },
-            customdata: countData.wait,
+            customdata: buildHoverCustomData(countData.wait),
             hovertemplate: buildHoverTemplate("충원합격") },
           { y: labelsTop, x: xData.fail, type: "bar", name: "불합격", orientation: "h",
             marker: { color: "rgba(220, 38, 38, 0.58)", line: { width: 0 } },
-            customdata: countData.fail,
+            customdata: buildHoverCustomData(countData.fail),
             hovertemplate: buildHoverTemplate("불합격") },
         ], {
             height: dynamicHeight,
             barmode: "stack",
             bargap: 0.3,
-            margin: { t: 54, b: 78, l: 150, r: 176 },
+            margin: { t: 54, b: 78, l: 150, r: 232 },
             xaxis: {
               title: { text: xTitle, font: { size: 11, color: "#9ca3af" } },
               gridcolor: "#f0f0f0",
