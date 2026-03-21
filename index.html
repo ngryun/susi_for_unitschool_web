@@ -839,11 +839,11 @@
     .detail-table col.detail-col-result { width: 92px; }
     .detail-table col.detail-col-register { width: 64px; }
     .detail-table col.detail-col-grade { width: 94px; }
-    .detail-table col.detail-col-grade5 { width: 102px; }
+    .detail-table col.detail-col-grade-conv { width: 110px; }
     .detail-col-class,
     .detail-col-register,
     .detail-col-grade,
-    .detail-col-grade5 {
+    .detail-col-grade-conv {
       text-align: center;
     }
     .detail-cell-text,
@@ -1276,40 +1276,104 @@
     const DEFAULT_UNIV_DIRECTORY_SORT = "total";
     const DEPT_SEARCH_RESULT_LIMIT = 30;
     const STUDENT_TREND_MAX_APPS = 6;
-    const BUSAN_TOP_NINE_GRADE_RANGE = {
-      grade5: 1.0,
-      minGrade9: 1.15,
-      maxGrade9: 1.45,
-    };
-    const BUSAN_GRADE_5_TO_9_TABLE = [
-      { grade5: 1.08, grade9: 1.59 },
-      { grade5: 1.16, grade9: 1.78 },
-      { grade5: 1.24, grade9: 1.98 },
-      { grade5: 1.33, grade9: 2.14 },
-      { grade5: 1.42, grade9: 2.32 },
-      { grade5: 1.50, grade9: 2.45 },
-      { grade5: 1.66, grade9: 2.72 },
-      { grade5: 1.83, grade9: 3.03 },
-      { grade5: 2.00, grade9: 3.35 },
-      { grade5: 2.16, grade9: 3.60 },
-      { grade5: 2.33, grade9: 3.91 },
-      { grade5: 2.50, grade9: 4.20 },
-      { grade5: 2.66, grade9: 4.46 },
-      { grade5: 2.83, grade9: 4.73 },
-      { grade5: 3.00, grade9: 5.03 },
-      { grade5: 3.16, grade9: 5.28 },
-      { grade5: 3.33, grade9: 5.58 },
-      { grade5: 3.50, grade9: 5.86 },
-      { grade5: 3.66, grade9: 6.08 },
-      { grade5: 3.83, grade9: 6.37 },
-      { grade5: 4.00, grade9: 6.67 },
-      { grade5: 4.16, grade9: 6.93 },
-      { grade5: 4.33, grade9: 7.20 },
-      { grade5: 4.50, grade9: 7.48 },
-      { grade5: 4.66, grade9: 7.71 },
-      { grade5: 4.83, grade9: 8.00 },
-      { grade5: 5.00, grade9: 9.00 },
+    const ESTIMATED_FIVE_GRADE_STANDARDS = [
+      { key: "busan", label: "부산" },
+      { key: "gyeonggi", label: "경기" },
     ];
+    const GRADE_ESTIMATE_STANDARD_MAP = {
+      busan: {
+        label: "부산",
+        topRange: {
+          grade5: 1.0,
+          minGrade9: 1.15,
+          maxGrade9: 1.45,
+        },
+        grade5To9Table: [
+          { grade5: 1.08, grade9: 1.59 },
+          { grade5: 1.16, grade9: 1.78 },
+          { grade5: 1.24, grade9: 1.98 },
+          { grade5: 1.33, grade9: 2.14 },
+          { grade5: 1.42, grade9: 2.32 },
+          { grade5: 1.50, grade9: 2.45 },
+          { grade5: 1.66, grade9: 2.72 },
+          { grade5: 1.83, grade9: 3.03 },
+          { grade5: 2.00, grade9: 3.35 },
+          { grade5: 2.16, grade9: 3.60 },
+          { grade5: 2.33, grade9: 3.91 },
+          { grade5: 2.50, grade9: 4.20 },
+          { grade5: 2.66, grade9: 4.46 },
+          { grade5: 2.83, grade9: 4.73 },
+          { grade5: 3.00, grade9: 5.03 },
+          { grade5: 3.16, grade9: 5.28 },
+          { grade5: 3.33, grade9: 5.58 },
+          { grade5: 3.50, grade9: 5.86 },
+          { grade5: 3.66, grade9: 6.08 },
+          { grade5: 3.83, grade9: 6.37 },
+          { grade5: 4.00, grade9: 6.67 },
+          { grade5: 4.16, grade9: 6.93 },
+          { grade5: 4.33, grade9: 7.20 },
+          { grade5: 4.50, grade9: 7.48 },
+          { grade5: 4.66, grade9: 7.71 },
+          { grade5: 4.83, grade9: 8.00 },
+          { grade5: 5.00, grade9: 9.00 },
+        ],
+      },
+      gyeonggi: {
+        label: "경기",
+        topRange: null,
+        grade5To9Table: [
+          { grade5: 1.000, grade9: 1.39 },
+          { grade5: 1.083, grade9: 1.53 },
+          { grade5: 1.167, grade9: 1.73 },
+          { grade5: 1.250, grade9: 1.87 },
+          { grade5: 1.333, grade9: 2.03 },
+          { grade5: 1.417, grade9: 2.18 },
+          { grade5: 1.500, grade9: 2.31 },
+          { grade5: 1.583, grade9: 2.45 },
+          { grade5: 1.667, grade9: 2.61 },
+          { grade5: 1.750, grade9: 2.73 },
+          { grade5: 1.833, grade9: 2.88 },
+          { grade5: 1.917, grade9: 3.00 },
+          { grade5: 2.000, grade9: 3.16 },
+          { grade5: 2.083, grade9: 3.28 },
+          { grade5: 2.167, grade9: 3.41 },
+          { grade5: 2.250, grade9: 3.54 },
+          { grade5: 2.333, grade9: 3.68 },
+          { grade5: 2.417, grade9: 3.80 },
+          { grade5: 2.500, grade9: 3.95 },
+          { grade5: 2.583, grade9: 4.08 },
+          { grade5: 2.667, grade9: 4.21 },
+          { grade5: 2.750, grade9: 4.34 },
+          { grade5: 2.833, grade9: 4.48 },
+          { grade5: 2.917, grade9: 4.61 },
+          { grade5: 3.000, grade9: 4.75 },
+          { grade5: 3.083, grade9: 4.87 },
+          { grade5: 3.167, grade9: 5.00 },
+          { grade5: 3.250, grade9: 5.12 },
+          { grade5: 3.333, grade9: 5.24 },
+          { grade5: 3.417, grade9: 5.33 },
+          { grade5: 3.500, grade9: 5.47 },
+          { grade5: 3.583, grade9: 5.59 },
+          { grade5: 3.667, grade9: 5.71 },
+          { grade5: 3.750, grade9: 5.83 },
+          { grade5: 3.833, grade9: 5.98 },
+          { grade5: 3.917, grade9: 6.09 },
+          { grade5: 4.000, grade9: 6.25 },
+          { grade5: 4.083, grade9: 6.36 },
+          { grade5: 4.167, grade9: 6.50 },
+          { grade5: 4.250, grade9: 6.61 },
+          { grade5: 4.333, grade9: 6.72 },
+          { grade5: 4.417, grade9: 6.81 },
+          { grade5: 4.500, grade9: 6.94 },
+          { grade5: 4.583, grade9: 7.05 },
+          { grade5: 4.667, grade9: 7.18 },
+          { grade5: 4.750, grade9: 7.30 },
+          { grade5: 4.833, grade9: 7.45 },
+          { grade5: 4.917, grade9: 7.62 },
+          { grade5: 5.000, grade9: 8.97 },
+        ],
+      },
+    };
     const GRADE_BAND_COLORS = {
       separate: {
         pass: { strong: "rgba(5, 150, 105, 0.82)", weak: "rgba(5, 150, 105, 0.36)" },
@@ -3594,26 +3658,35 @@ body.protected-export-locked {
       return v === null || v === undefined || Number.isNaN(v) ? "-" : Number(v).toFixed(2);
     }
 
-    function estimateFiveGradeFromNineGradeAverage(gradeAverage9) {
+    function estimateFiveGradeFromNineGradeAverage(gradeAverage9, standardKey = "busan") {
       if (gradeAverage9 === null || gradeAverage9 === undefined || Number.isNaN(gradeAverage9)) {
         return null;
       }
-      const topRange = BUSAN_TOP_NINE_GRADE_RANGE;
-      const table = BUSAN_GRADE_5_TO_9_TABLE;
+      const standard = GRADE_ESTIMATE_STANDARD_MAP[standardKey];
+      if (!standard) return null;
+      const topRange = standard.topRange;
+      const table = standard.grade5To9Table || [];
       if (!table.length) return null;
+      const firstPoint = table[0];
+      const lastPoint = table[table.length - 1];
+      const hasLowerCoverage = !!topRange || firstPoint.grade5 <= 1.0;
+      const hasUpperCoverage = lastPoint.grade5 >= 5.0;
 
-      if (gradeAverage9 <= topRange.maxGrade9) {
+      if (topRange && gradeAverage9 <= topRange.maxGrade9) {
         return topRange.grade5;
       }
 
-      if (gradeAverage9 < table[0].grade9) {
+      if (topRange && gradeAverage9 < table[0].grade9) {
         const ratio = (gradeAverage9 - topRange.maxGrade9) / (table[0].grade9 - topRange.maxGrade9);
         return topRange.grade5 + ((table[0].grade5 - topRange.grade5) * ratio);
       }
 
-      const lastPoint = table[table.length - 1];
+      if (!topRange && gradeAverage9 <= table[0].grade9) {
+        return hasLowerCoverage ? table[0].grade5 : null;
+      }
+
       if (gradeAverage9 >= lastPoint.grade9) {
-        return lastPoint.grade5;
+        return hasUpperCoverage ? lastPoint.grade5 : null;
       }
 
       for (let index = 1; index < table.length; index += 1) {
@@ -3631,8 +3704,8 @@ body.protected-export-locked {
       return lastPoint.grade5;
     }
 
-    function formatEstimatedFiveGrade(v) {
-      const estimated = estimateFiveGradeFromNineGradeAverage(v);
+    function formatEstimatedFiveGrade(v, standardKey = "busan") {
+      const estimated = estimateFiveGradeFromNineGradeAverage(v, standardKey);
       return estimated === null ? "-" : Number(estimated).toFixed(2);
     }
 
@@ -3779,7 +3852,11 @@ body.protected-export-locked {
         { header: "결과", colClass: "detail-col-result", render: (r) => formatResultBadge(r.result) },
         { header: "등록", colClass: "detail-col-register", value: (r) => formatRegistrationDisplay(r.registered_yn) },
         { header: "전교과등급", colClass: "detail-col-grade", value: (r) => formatModalGrade(r.all_subj_grade) },
-        { header: "5등급(추정)", colClass: "detail-col-grade5", value: (r) => formatEstimatedFiveGrade(r.all_subj_grade) },
+        ...ESTIMATED_FIVE_GRADE_STANDARDS.map((standard) => ({
+          header: `5등급(${standard.label})`,
+          colClass: "detail-col-grade-conv",
+          value: (r) => formatEstimatedFiveGrade(r.all_subj_grade, standard.key),
+        })),
       );
       return columns;
     }
@@ -3979,7 +4056,10 @@ body.protected-export-locked {
         row["결과"] = r.result || "";
         row["등록"] = formatRegistrationDisplay(r.registered_yn);
         row["전교과등급"] = r.all_subj_grade === null || r.all_subj_grade === undefined || Number.isNaN(r.all_subj_grade) ? "" : Number(r.all_subj_grade).toFixed(2);
-        row["5등급(추정)"] = formatEstimatedFiveGrade(r.all_subj_grade) === "-" ? "" : formatEstimatedFiveGrade(r.all_subj_grade);
+        ESTIMATED_FIVE_GRADE_STANDARDS.forEach((standard) => {
+          const estimated = formatEstimatedFiveGrade(r.all_subj_grade, standard.key);
+          row[`5등급(${standard.label})`] = estimated === "-" ? "" : estimated;
+        });
         return row;
       });
     }
