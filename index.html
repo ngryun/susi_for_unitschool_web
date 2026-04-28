@@ -1276,6 +1276,33 @@
     const DEFAULT_UNIV_DIRECTORY_SORT = "total";
     const DEPT_SEARCH_RESULT_LIMIT = 30;
     const STUDENT_TREND_MAX_APPS = 6;
+    const PROTECTED_EXPORT_MIN_PASSWORD_LENGTH = 12;
+    const PROTECTED_EXPORT_RECOMMENDED_PASSWORD_LENGTH = 20;
+    const PROTECTED_EXPORT_PBKDF2_ITERATIONS = 600000;
+    const SHARED_RECORD_SCHEMA = [
+      "student_key",
+      "class_no",
+      "region",
+      "univ",
+      "apptype",
+      "subtype",
+      "dept",
+      "result",
+      "registered_yn",
+      "all_subj_grade",
+      "conv_grade",
+    ];
+    const SHARED_RECORD_DICTIONARY_FIELDS = new Set([
+      "student_key",
+      "class_no",
+      "region",
+      "univ",
+      "apptype",
+      "subtype",
+      "dept",
+      "result",
+      "registered_yn",
+    ]);
     const ESTIMATED_FIVE_GRADE_STANDARDS = [
       { key: "busan", label: "부산" },
       { key: "gyeonggi", label: "경기" },
@@ -1663,23 +1690,119 @@
         deptFinderSelection: Array.isArray(deptFinderSelection) ? [...deptFinderSelection] : [],
       };
     }
+    function sanitizeRecordForShared(record, index) {
+      const normalized = normalizeLoadedRecord(record, index);
+      return {
+        student_key: normalized.student_key || `S${String(index + 1).padStart(5, "0")}`,
+        class_no: normalized.class_no,
+        region: normalized.region,
+        univ: normalized.univ,
+        apptype: normalized.apptype,
+        subtype: normalized.subtype,
+        dept: normalized.dept,
+        result: normalized.result,
+        registered_yn: normalized.registered_yn,
+        all_subj_grade: normalized.all_subj_grade,
+        conv_grade: normalized.conv_grade,
+      };
+    }
     function sanitizeRecordsForShared(records) {
-      return records.map((record, index) => {
-        const normalized = normalizeLoadedRecord(record, index);
-        return {
-          student_key: normalized.student_key || `S${String(index + 1).padStart(5, "0")}`,
-          class_no: normalized.class_no,
-          region: normalized.region,
-          univ: normalized.univ,
-          apptype: normalized.apptype,
-          subtype: normalized.subtype,
-          dept: normalized.dept,
-          result: normalized.result,
-          registered_yn: normalized.registered_yn,
-          all_subj_grade: normalized.all_subj_grade,
-          conv_grade: normalized.conv_grade,
-        };
+      return records.map((record, index) => sanitizeRecordForShared(record, index));
+    }
+    function buildSharedRecordsPayload(records) {
+      const dictionaries = SHARED_RECORD_SCHEMA.map((field) => (
+        SHARED_RECORD_DICTIONARY_FIELDS.has(field) ? [] : null
+      ));
+      const dictionaryIndexes = dictionaries.map((dictionary) => (
+        Array.isArray(dictionary) ? new Map() : null
+      ));
+      const columns = SHARED_RECORD_SCHEMA.map(() => []);
+
+      records.forEach((record, rowIndex) => {
+        const normalized = sanitizeRecordForShared(record, rowIndex);
+        SHARED_RECORD_SCHEMA.forEach((field, fieldIndex) => {
+          const dictionary = dictionaries[fieldIndex];
+          const column = columns[fieldIndex];
+          if (Array.isArray(dictionary)) {
+            const textValue = safe(normalized[field]);
+            const dictionaryIndex = dictionaryIndexes[fieldIndex];
+            let valueIndex = dictionaryIndex.get(textValue);
+            if (valueIndex === undefined) {
+              valueIndex = dictionary.length;
+              dictionary.push(textValue);
+              dictionaryIndex.set(textValue, valueIndex);
+            }
+            column.push(valueIndex);
+            return;
+          }
+          column.push(normalized[field] === undefined ? null : normalized[field]);
+        });
       });
+
+      return {
+        v: 1,
+        n: records.length,
+        d: dictionaries,
+        c: columns,
+      };
+    }
+    function unpackSharedRecordsPayload(payload) {
+      if (Array.isArray(payload)) return payload;
+      if (!payload || typeof payload !== "object" || payload.v !== 1 || !Array.isArray(payload.c)) {
+        return [];
+      }
+      const dictionaries = Array.isArray(payload.d) ? payload.d : [];
+      const columns = payload.c;
+      const rowCount = Number.isInteger(payload.n)
+        ? payload.n
+        : columns.reduce((max, column) => Math.max(max, Array.isArray(column) ? column.length : 0), 0);
+
+      return Array.from({ length: rowCount }, (_, rowIndex) => {
+        const record = {};
+        SHARED_RECORD_SCHEMA.forEach((field, fieldIndex) => {
+          const column = Array.isArray(columns[fieldIndex]) ? columns[fieldIndex] : [];
+          const rawValue = column[rowIndex];
+          const dictionary = dictionaries[fieldIndex];
+          record[field] = Array.isArray(dictionary)
+            ? (dictionary[rawValue] ?? "")
+            : (rawValue === undefined ? null : rawValue);
+        });
+        return record;
+      });
+    }
+    function getPreloadedSharedRecords() {
+      if (Array.isArray(window.PRELOADED_DATA) && window.PRELOADED_DATA.length) {
+        return window.PRELOADED_DATA;
+      }
+      const unpackedRecords = unpackSharedRecordsPayload(window.PRELOADED_DATA_PAYLOAD);
+      if (unpackedRecords.length) {
+        window.PRELOADED_DATA = unpackedRecords;
+      }
+      return unpackedRecords;
+    }
+    function getProtectedExportPasswordIssues(password) {
+      const normalizedPassword = String(password || "");
+      const compactPassword = normalizedPassword.replace(/\s+/g, "");
+      const lowerPassword = compactPassword.toLowerCase();
+      const issues = [];
+      if (normalizedPassword.length < PROTECTED_EXPORT_MIN_PASSWORD_LENGTH) {
+        issues.push(`암호는 ${PROTECTED_EXPORT_MIN_PASSWORD_LENGTH}자 이상이어야 합니다.`);
+      }
+
+      const characterGroups = [
+        /[A-Za-z]/.test(normalizedPassword),
+        /[0-9]/.test(normalizedPassword),
+        /[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]/.test(normalizedPassword),
+        /[\u3131-\u318E\uAC00-\uD7A3]/.test(normalizedPassword),
+      ].filter(Boolean).length;
+      if (normalizedPassword.length < PROTECTED_EXPORT_RECOMMENDED_PASSWORD_LENGTH && characterGroups < 2) {
+        issues.push(`영문, 숫자, 기호, 한글 중 2종류 이상을 섞거나 ${PROTECTED_EXPORT_RECOMMENDED_PASSWORD_LENGTH}자 이상 문장형 암호를 사용하세요.`);
+      }
+
+      if (/^(.)\1+$/.test(compactPassword) || /^(1234|1111|0000|abcd|qwer|password)/.test(lowerPassword)) {
+        issues.push("반복 문자나 예측 가능한 암호는 사용할 수 없습니다.");
+      }
+      return issues;
     }
     function arrayBufferToBase64(buffer) {
       const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
@@ -1706,7 +1829,7 @@
         {
           name: "PBKDF2",
           salt,
-          iterations: 250000,
+          iterations: PROTECTED_EXPORT_PBKDF2_ITERATIONS,
           hash: "SHA-256",
         },
         baseKey,
@@ -1735,7 +1858,7 @@
         salt: arrayBufferToBase64(salt),
         iv: arrayBufferToBase64(iv),
         ciphertext: arrayBufferToBase64(ciphertext),
-        iterations: 250000,
+        iterations: PROTECTED_EXPORT_PBKDF2_ITERATIONS,
       };
     }
     function buildProtectedHtmlBootstrap(encryptedPayload) {
@@ -1821,7 +1944,7 @@ body.protected-export-locked {
     overlay.innerHTML = \`
       <div class="overlay-card">
         <h2>암호 보호된 공유 보고서</h2>
-        <p>이 파일은 열기 암호가 맞아야 분석 결과를 복호화해서 보여줍니다.</p>
+        <p>이 파일은 열기 암호가 맞아야 분석 결과를 복호화합니다. 파일을 가진 사람은 암호 추측을 시도할 수 있으므로 공유 범위를 제한하세요.</p>
         <input id="protectedSharedPassword" type="password" placeholder="열기 암호 입력" autocomplete="current-password">
         <button id="protectedSharedUnlock">열기</button>
         <div id="protectedSharedStatus"></div>
@@ -1882,7 +2005,12 @@ body.protected-export-locked {
         );
         const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, ciphertext);
         const payload = JSON.parse(new TextDecoder().decode(decrypted));
-        window.PRELOADED_DATA = payload.analysisData;
+        if (Array.isArray(payload.analysisData)) {
+          window.PRELOADED_DATA = payload.analysisData;
+        } else {
+          window.PRELOADED_DATA = null;
+          window.PRELOADED_DATA_PAYLOAD = payload.analysisData;
+        }
         window.PRELOADED_UI_STATE = payload.uiState;
         document.body.classList.remove("protected-export-locked");
         overlay.remove();
@@ -1967,7 +2095,7 @@ body.protected-export-locked {
       preloadScript.id = "preloaded-shared-data";
       if (password) {
         const encryptedPayload = await encryptExportPayload(password, {
-          analysisData: sanitizeRecordsForShared(records),
+          analysisData: buildSharedRecordsPayload(records),
           uiState,
         });
         preloadScript.textContent = escapeInlineScriptContent(buildProtectedHtmlBootstrap(encryptedPayload));
@@ -1975,7 +2103,7 @@ body.protected-export-locked {
         preloadScript.textContent = [
           `window.APP_BUILD_UTC = ${serializeForInlineScript(new Date().toISOString())};`,
           "window.PRELOADED_SHARED = true;",
-          `window.PRELOADED_DATA = ${serializeForInlineScript(sanitizeRecordsForShared(records))};`,
+          `window.PRELOADED_DATA_PAYLOAD = ${serializeForInlineScript(buildSharedRecordsPayload(records))};`,
           `window.PRELOADED_UI_STATE = ${serializeForInlineScript(uiState)};`,
         ].join("\n");
       }
@@ -1993,6 +2121,12 @@ body.protected-export-locked {
         throw new Error("먼저 보고서를 생성해주세요.");
       }
       const password = typeof options.password === "string" ? options.password : "";
+      if (password) {
+        const passwordIssues = getProtectedExportPasswordIssues(password);
+        if (passwordIssues.length) {
+          throw new Error(passwordIssues[0]);
+        }
+      }
       const htmlContent = await buildSharedHtmlDocument(currentReportRecords, getCurrentReportUiState(), { password });
       const blob = new Blob(["\uFEFF", htmlContent], { type: "text/html;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
@@ -2013,9 +2147,10 @@ body.protected-export-locked {
         <div style="position:fixed; inset:0; z-index:21000; display:flex; align-items:center; justify-content:center; padding:24px; background:rgba(15,23,42,0.42); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);">
           <div style="width:min(100%, 440px); background:#fff; border:1px solid rgba(15,23,42,0.08); border-radius:18px; box-shadow:0 24px 60px rgba(15,23,42,0.18); padding:24px;">
             <div style="font-size:18px; font-weight:700; color:#111827; margin-bottom:8px;">공유용 HTML 저장</div>
-            <div style="font-size:13px; line-height:1.6; color:#6b7280; margin-bottom:16px;">열기 암호를 설정하면 저장 파일을 열 때 먼저 암호를 입력해야 합니다. 비워두면 기존처럼 암호 없이 저장됩니다.</div>
+            <div style="font-size:13px; line-height:1.6; color:#6b7280; margin-bottom:14px;">열기 암호를 설정하면 저장 파일을 열 때 먼저 암호를 입력해야 합니다. 비워두면 기존처럼 암호 없이 저장됩니다.</div>
+            <div style="font-size:12px; line-height:1.55; color:#92400e; background:#fffbeb; border:1px solid #fef3c7; border-radius:10px; padding:10px 12px; margin-bottom:14px;">암호 보호는 파일 오픈을 막는 보조 장치입니다. 암호를 입력할 때는 ${PROTECTED_EXPORT_MIN_PASSWORD_LENGTH}자 이상, 가능하면 ${PROTECTED_EXPORT_RECOMMENDED_PASSWORD_LENGTH}자 이상의 예측하기 어려운 문장형 암호를 사용하세요.</div>
             <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;" for="sharedExportPassword">열기 암호</label>
-            <input id="sharedExportPassword" type="password" placeholder="선택 입력" autocomplete="new-password" style="width:100%; border:1px solid #d1d5db; border-radius:10px; padding:11px 12px; font:inherit; margin-bottom:12px;">
+            <input id="sharedExportPassword" type="password" placeholder="선택 입력 (${PROTECTED_EXPORT_MIN_PASSWORD_LENGTH}자 이상)" autocomplete="new-password" style="width:100%; border:1px solid #d1d5db; border-radius:10px; padding:11px 12px; font:inherit; margin-bottom:12px;">
             <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;" for="sharedExportPasswordConfirm">암호 확인</label>
             <input id="sharedExportPasswordConfirm" type="password" placeholder="암호를 다시 입력" autocomplete="new-password" style="width:100%; border:1px solid #d1d5db; border-radius:10px; padding:11px 12px; font:inherit;">
             <div id="sharedExportOptionsError" style="min-height:18px; font-size:12px; color:#b91c1c; margin-top:10px;"></div>
@@ -2041,6 +2176,14 @@ body.protected-export-locked {
           if (errorDiv) errorDiv.textContent = "암호와 확인 입력이 일치하지 않습니다.";
           if (confirmInput) confirmInput.focus();
           return;
+        }
+        if (password) {
+          const passwordIssues = getProtectedExportPasswordIssues(password);
+          if (passwordIssues.length) {
+            if (errorDiv) errorDiv.textContent = passwordIssues[0];
+            if (passwordInput) passwordInput.focus();
+            return;
+          }
         }
         try {
           await downloadSharedHtml({ password });
@@ -4392,8 +4535,9 @@ body.protected-export-locked {
     }
 
     function initializePreloadedReport() {
-      if (!Array.isArray(window.PRELOADED_DATA) || !window.PRELOADED_DATA.length) return;
-      const normalizedRecords = normalizeLoadedRecords(window.PRELOADED_DATA);
+      const preloadedRecords = getPreloadedSharedRecords();
+      if (!Array.isArray(preloadedRecords) || !preloadedRecords.length) return;
+      const normalizedRecords = normalizeLoadedRecords(preloadedRecords);
       const preloadedState = window.PRELOADED_UI_STATE && typeof window.PRELOADED_UI_STATE === "object"
         ? window.PRELOADED_UI_STATE
         : {};
